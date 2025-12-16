@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // 👈 Import useEffect
 import { Routes, Route } from 'react-router-dom';
 
-// Page Imports
 import Navbar from './Navbar';
 import HeroSection from './HeroSection';
 import ContributorsSection from './ContributorsSection';
@@ -10,14 +9,15 @@ import SignupPage from './SignupPage';
 import LoginPage from './LoginPage';
 import InsightsSection from './InsightsSection';
 
-// Protected Pages & The Guard
+import AdminLoginPage from './AdminLoginPage';
+import AdminDashboard from './AdminDashboard';
+
 import Records from './Records';
 import Schedule from './Schedule';
 import ProtectedRoute from './ProtectedRoute';
 
 import './index.css'; 
 
-// Helper Component for the Landing Page
 function LandingPage() {
   return (
     <>
@@ -31,17 +31,38 @@ function LandingPage() {
 }
 
 function App() {
+  
+  // 🌙 GLOBAL THEME CHECKER
+  // This runs once when the app starts, ensuring Dark Mode applies to Login/Admin pages too!
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, []);
+
   return (
     <div className="min-h-screen font-sans">
       <Routes>
-        {/* Public Routes (Navbar is already inside these components) */}
+        {/* PUBLIC ROUTES */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
 
-        {/* 🔒 PROTECTED ROUTES */}
-        {/* I added <Navbar /> here so it shows up on these pages too! */}
-        
+        {/* ADMIN ROUTES */}
+        <Route path="/admin-login" element={<AdminLoginPage />} />
+        <Route 
+          path="/admin-dashboard" 
+          element={
+            <ProtectedRoute>
+               <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* PROTECTED ROUTES */}
         <Route 
           path="/records" 
           element={

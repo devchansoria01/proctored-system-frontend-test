@@ -1,35 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, db } from './firebase'; // Import db too!
+import { auth, db } from './firebase'; 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore'; // Tools to read the filing cabinet
+import { doc, getDoc } from 'firebase/firestore'; 
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [userName, setUserName] = useState("User"); // Store just the name
+  const [userName, setUserName] = useState("User");
+  const [isAdmin, setIsAdmin] = useState(false); 
+  
+  // 🌙 THEME STATE
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
+    // 1. Check Auth & Admin Role
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        
-        // 1. Try the "ID Badge" first
-        if (currentUser.displayName) {
-          setUserName(currentUser.displayName);
-        } 
-        // 2. If blank, check the "Filing Cabinet" (Database)
-        else {
-          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-          if (userDoc.exists()) {
-            setUserName(userDoc.data().name); // Found it!
-          }
+        try {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setUserName(userData.name || currentUser.displayName);
+                setIsAdmin(userData.role === 'admin');
+            }
+        } catch (e) {
+            console.log("Error fetching user data:", e);
         }
       } else {
         setUser(null);
         setUserName("User");
+        setIsAdmin(false);
       }
     });
+
+    // 2. Check Saved Theme Preference (Local Storage)
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.body.classList.add('dark-mode');
+    }
+
     return () => unsubscribe();
   }, []);
 
@@ -38,25 +50,64 @@ export default function Navbar() {
     navigate('/login');
   };
 
+  // 🌗 TOGGLE FUNCTION
+  const toggleTheme = () => {
+    if (isDarkMode) {
+      document.body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+      setIsDarkMode(false);
+    } else {
+      document.body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+      setIsDarkMode(true);
+    }
+  };
+
   return (
-    <nav className="navbar fixed-top">
+    // Added 'navbar-light' or 'navbar-dark' logic if using Bootstrap classes
+    <nav className={`navbar fixed-top ${isDarkMode ? 'navbar-dark bg-dark' : 'navbar-light bg-white'} shadow-sm`}>
       <div className="container" style={{ display: 'flex', width: '90%', alignItems: 'center' }}>
         
-        <a href="/#home" className="navbar-brand">
-          <i className="fa-solid fa-shield-halved"></i> APS-Admin Proctored System
+        <a href="/#home" className="navbar-brand fw-bold">
+          <i className="fa-solid fa-shield-halved me-2"></i> 
+          <span style={{color: isDarkMode ? '#fff' : '#0ea5a4'}}>APS-System</span>
         </a>
         
         <div style={{ display: 'flex', alignItems: 'center' }}>
+          
           <a className="nav-link" href="/#home">Home</a>
           <a className="nav-link" href="/#contributors">About</a>
-          <Link to="/records" className="nav-link">Records</Link>
-          <Link to="/schedule" className="nav-link">Schedule</Link>
-          
-          {user ? (
+
+          {!isAdmin && (
+            <>
+                <Link to="/records" className="nav-link">Records</Link>
+                <Link to="/schedule" className="nav-link">Schedule</Link>
+            </>
+          )}
+
+          {!isAdmin ? (
+            <Link 
+              to="/admin-login" 
+              target="_blank"
+              className="nav-link fw-bold text-danger ms-3"
+              style={{ fontSize: '0.9rem' }}
+            >
+              Admin Portal 🔒
+            </Link>
+          ) : (
+            <Link 
+              to="/admin-dashboard" 
+              className="nav-link fw-bold text-primary ms-3"
+              style={{ fontSize: '0.9rem', border: '1px solid #0d6efd', borderRadius: '20px', padding: '5px 15px' }}
+            >
+              Back to Admin Portal 🔙
+            </Link>
+          )}
+
+          {user && !isAdmin && (
             <div className="d-flex align-items-center ms-3">
-                {/* 👇 NOW USES THE SMART NAME VARIABLE */}
-                <span className="fw-bold me-3" style={{ color: '#0f172a' }}>
-                    👋 Welcome, {userName}
+                <span className={`fw-bold me-3 ${isDarkMode ? 'text-light' : 'text-dark'}`}>
+                    👋 {userName}
                 </span>
                 <button 
                     onClick={handleLogout}
@@ -66,7 +117,9 @@ export default function Navbar() {
                     Logout
                 </button>
             </div>
-          ) : (
+          )}
+          
+          {!user && (
             <Link
               to="/login"
               className="nav-link ms-3"
@@ -82,7 +135,15 @@ export default function Navbar() {
             </Link>
           )}
           
-          <button className="theme-btn ms-2">🌙</button>
+          {/* 🌙 THEME BUTTON (NOW WORKING) */}
+          <button 
+            onClick={toggleTheme}
+            className="btn ms-2"
+            style={{ fontSize: '1.2rem', border: 'none', background: 'transparent' }}
+            title="Toggle Dark Mode"
+          >
+            {isDarkMode ? '☀️' : '🌙'}
+          </button>
         </div>
       </div>
     </nav>

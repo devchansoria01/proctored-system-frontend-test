@@ -19,13 +19,11 @@ export default function LoginPage() {
 
     try {
       // 3. THE REAL LOGIN LOGIC
-      // We ask Firebase: "Does this email and password match?"
       await signInWithEmailAndPassword(auth, email, password);
       
       console.log("Login Successful!");
       
       // 4. Success? Go Home.
-      // Firebase automatically "persists" the session, so we don't need manual localStorage!
       navigate('/'); 
 
     } catch (err) {
@@ -44,44 +42,50 @@ export default function LoginPage() {
       <Navbar />
       <div className="container-box">
         <div className="card-box">
-          <h3 className="text-center fw-bold mb-3">Welcome Back 👋</h3>
+            {/* ADDED: theme-text-primary */}
+          <h3 className="text-center fw-bold mb-4 theme-text-primary">Welcome Back 👋</h3>
           
-          {/* Show Error Message if it exists */}
-          {error && <div className="alert alert-danger p-2 text-center">{error}</div>}
+          {/* ADDED: theme-text-secondary */}
+          {error && <div className="alert alert-danger p-2 text-center theme-text-secondary">{error}</div>}
 
           <form onSubmit={handleLogin}>
-            <div className="form-floating mb-3">
-              <input 
-                type="email" 
-                className="form-control" 
-                id="floatingInput" 
-                placeholder="name@example.com" 
-                required 
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label htmlFor="floatingInput">Email address</label>
+            
+            {/* 1. EMAIL FIELD: Switched to standard layout */}
+            <div className="mb-4">
+                {/* ADDED: theme-text-secondary for label color */}
+                <label htmlFor="emailInput" className="small mb-1 fw-bold theme-text-secondary">Email address</label>
+                <input 
+                  type="email" 
+                  className="form-control admin-input" /* Using admin-input class for dark mode style */
+                  id="emailInput" 
+                  placeholder="name@example.com" 
+                  required 
+                  onChange={(e) => setEmail(e.target.value)}
+                />
             </div>
 
-            <div className="form-floating mb-3">
-              <input 
-                type="password" 
-                className="form-control" 
-                id="floatingPassword" 
-                placeholder="Password" 
-                required 
-                // Connect this input to our state
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <label htmlFor="floatingPassword">Password</label>
+            {/* 2. PASSWORD FIELD: Switched to standard layout */}
+            <div className="mb-4">
+                {/* ADDED: theme-text-secondary for label color */}
+                <label htmlFor="passwordInput" className="small mb-1 fw-bold theme-text-secondary">Password</label>
+                <input 
+                  type="password" 
+                  className="form-control admin-input" /* Using admin-input class for dark mode style */
+                  id="passwordInput" 
+                  placeholder="Password" 
+                  required 
+                  onChange={(e) => setPassword(e.target.value)}
+                />
             </div>
 
             <button className="login-btn w-100">Login</button>
           </form>
 
-          <p className="text-center mt-4">
+            {/* ADDED: theme-text-secondary */}
+          <p className="text-center mt-4 theme-text-secondary">
             New user? <br/>
             <Link to="/signup" className="fw-bold" style={{color: 'var(--accent)', textDecoration: 'none'}}>
-                Create account
+              Create account
             </Link>
           </p>
         </div>

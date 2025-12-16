@@ -8,109 +8,111 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export default function SignupPage() {
-  const navigate = useNavigate();
-  
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSignup = async (e) => {
-    e.preventDefault(); 
-    setError('');
+  const handleSignup = async (e) => {
+    e.preventDefault(); 
+    setError('');
 
-    try {
-      // A. Create the Account (Authentication)
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    try {
+      // A. Create the Account (Authentication)
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-      // B. Update the "Auth Profile" Name immediately
-      await updateProfile(user, {
-        displayName: name
-      });
+      // B. Update the "Auth Profile" Name immediately
+      await updateProfile(user, {
+        displayName: name
+      });
 
-      // C. Save the Name & Role to the Database (Firestore)
-      await setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        name: name,
-        email: email,
-        role: "user",
-        createdAt: new Date()
-      });
+      // C. Save the Name & Role to the Database (Firestore)
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        name: name,
+        email: email,
+        role: "user",
+        createdAt: new Date()
+      });
 
-      console.log("User created:", user.uid);
+      console.log("User created:", user.uid);
 
-      // 👇 D. CHANGE HERE: Force them to Login
-      alert("Account created successfully! Please log in.");
-      navigate('/login');
-      
-    } catch (err) {
-      console.error("Signup Error:", err);
-      
-      // E. Handle "Email Already Exists" specifically
-      if (err.code === 'auth/email-already-in-use') {
-        alert("This email is already registered! Redirecting to login...");
-        navigate('/login');
-      } else {
-        const errorMessage = err.message.replace('Firebase: ', '').replace('auth/', '');
-        setError(errorMessage);
-      }
-    }
-  };
+      // 👇 D. CHANGE HERE: Force them to Login
+      alert("Account created successfully! Please log in.");
+      navigate('/login');
+      
+    } catch (err) {
+      console.error("Signup Error:", err);
+      
+      // E. Handle "Email Already Exists" specifically
+      if (err.code === 'auth/email-already-in-use') {
+        alert("This email is already registered! Redirecting to login...");
+        navigate('/login');
+      } else {
+        const errorMessage = err.message.replace('Firebase: ', '').replace('auth/', '');
+        setError(errorMessage);
+      }
+    }
+  };
 
-  return (
-    <>
-      <Navbar />
-      <div className="signup-wrapper">
-        <div className="signup-card">
-          <h1 className="signup-title">Sign Up</h1>
+  return (
+    <>
+      <Navbar />
+      <div className="signup-wrapper">
+        <div className="signup-card">
+          <h1 className="signup-title">Sign Up</h1>
 
-          {error && <div className="alert alert-danger p-2 small text-center">{error}</div>}
+          {/* ADDED: theme-text-secondary for better dark mode readability */}
+          {error && <div className="alert alert-danger p-2 small text-center theme-text-secondary">{error}</div>}
 
-          <form onSubmit={handleSignup}>
-            
-            <div className="input-group-custom">
-              <input 
-                type="text" 
-                required 
-                placeholder=" " 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <label>Full Name</label>
-            </div>
+          <form onSubmit={handleSignup}>
+            
+            <div className="input-group-custom">
+              <input 
+                type="text" 
+                required 
+                placeholder=" " 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <label>Full Name</label>
+            </div>
 
-            <div className="input-group-custom">
-              <input 
-                type="email" 
-                required 
-                placeholder=" " 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label>Email Address</label>
-            </div>
+            <div className="input-group-custom">
+              <input 
+                type="email" 
+                required 
+                placeholder=" " 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <label>Email Address</label>
+            </div>
 
-            <div className="input-group-custom">
-              <input 
-                type="password" 
-                required 
-                placeholder=" " 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <label>Password</label>
-            </div>
+            <div className="input-group-custom">
+              <input 
+                type="password" 
+                required 
+                placeholder=" " 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <label>Password</label>
+            </div>
 
-            <button className="signup-btn" type="submit">Create Account</button>
-          </form>
+            <button className="signup-btn" type="submit">Create Account</button>
+          </form>
 
-          <div className="alt-link">
-            Already have an account? <br/>
-            <Link to="/login" style={{textDecoration: 'none'}}>Login</Link>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+          {/* ADDED: theme-text-secondary to the surrounding text */}
+          <div className="alt-link theme-text-secondary">
+            Already have an account? <br/>
+            <Link to="/login" style={{textDecoration: 'none'}}>Login</Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

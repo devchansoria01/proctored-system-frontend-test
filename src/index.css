@@ -1,3 +1,8 @@
+/* =======================================================
+   1. VARIABLE DEFINITIONS (LIGHT AND DARK MODE)
+   ======================================================= */
+
+/* --- ORIGINAL LIGHT MODE VARIABLES --- */
 :root {
   --bg: #f8fafc;
   --card: #ffffff;
@@ -6,26 +11,46 @@
   --accent2: #22d3ee;
   --nav-link: #334155;
   --nav-hover: #0ea5a4;
+  
+  /* Admin Dashboard Variables (Light Mode) */
+  --admin-nav-bg: #ffffff;
+  --admin-page-bg: #f0f4f8;
+  --admin-hr-color: #e2e8f0;
+  --admin-tab-bg-active: #212529;
+  --admin-tab-text-inactive: #6c757d;
+  --admin-tab-bg-inactive: #f8f9fa;
 }
 
-.dark {
-  --bg: #020617;
-  --card: #0f172a;
-  --text: #e5e7eb;
-  --accent: #22d3ee;
-  --accent2: #0ea5a4;
-  --nav-link: #cbd5f5;
-  --nav-hover: #22d3ee;
+/* --- DARK MODE VARIABLE OVERRIDES --- */
+.dark, .dark-mode {
+  --bg: #0f172a; /* Very dark background */
+  --card: #1e293b; /* Dark card background */
+  --text: #f1f5f9; /* Light text */
+  --nav-link: #cbd5e1;
+  --admin-hr-color: #334155; /* Used for input borders */
+
+  /* Admin Dashboard Variables (Dark Mode) */
+  --admin-nav-bg: #0f172a;
+  --admin-page-bg: #0f172a;
+  --admin-hr-color: #334155;
+  --admin-tab-bg-active: #0ea5a4;
+  --admin-tab-text-inactive: #cbd5e1;
+  --admin-tab-bg-inactive: #334155;
 }
+
+/* =======================================================
+   2. BASE STYLES
+   ======================================================= */
 
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  /* This creates the smooth blue fade for the WHOLE website */
-  background: linear-gradient(180deg, #ffffff 0%, #e0f7fa 100%);
-  background-attachment: fixed; /* Keeps the gradient nice when you scroll */
+  /* Use variable for solid background color */
+  background: var(--bg); 
+  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
+  transition: background 0.3s ease; /* Smooth transition */
 }
 
 section { margin-bottom: 80px; }
@@ -91,15 +116,18 @@ h2::after {
   font-weight: 800;
 }
 .why-aps-card {
-  background: var(--card);
-  border-radius: 20px;
+  background: var(--card); /* Changed to use variable */
   padding: 25px;
-  box-shadow: 0 15px 30px rgba(0,0,0,.15);
-  transition: .4s;
+  border-radius: 18px;
+  border-bottom: 6px solid #0ea5a4; 
+  box-shadow: 0 15px 35px rgba(14, 165, 164, 0.12);
+  flex: 1;
+  transition: transform 0.3s ease;
   margin-bottom: 20px;
 }
 .why-aps-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(14, 165, 164, 0.2);
 }
 .contributor-card {
   background: var(--card);
@@ -122,15 +150,15 @@ footer {
   font-weight: 600;
   margin-top: 50px;
 }
-/* ================= SIGNUP & LOGIN STYLES ================= */
+
+/* SIGNUP & LOGIN STYLES */
 .signup-wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 80px; /* Added to account for fixed navbar */
+  padding-top: 80px;
 }
-
 .signup-card {
   background: var(--card);
   padding: 50px 40px;
@@ -140,12 +168,10 @@ footer {
   width: 100%;
   animation: cardEnter .9s ease;
 }
-
 @keyframes cardEnter {
   from { opacity: 0; transform: translateY(50px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 .signup-title {
   font-size: 2.6rem;
   font-weight: 800;
@@ -156,28 +182,24 @@ footer {
   animation: titleGlow 2.5s infinite alternate;
   margin-bottom: 20px;
 }
-
 @keyframes titleGlow {
   from { letter-spacing: 1px; }
   to { letter-spacing: 4px; }
 }
-
 .input-group-custom {
   position: relative;
   margin-top: 35px;
 }
-
 .input-group-custom input {
   width: 100%;
   padding: 14px 14px;
   border-radius: 14px;
-  border: 2px solid #ccc; /* Added visible border for better UX */
+  border: 2px solid #ccc;
   background: transparent;
   color: var(--text);
   outline: none;
   transition: .4s;
 }
-
 .input-group-custom label {
   position: absolute;
   top: 50%;
@@ -187,15 +209,13 @@ footer {
   pointer-events: none;
   transition: .4s;
   opacity: .7;
-  color: var(--text); /* Ensure label is visible */
+  color: var(--text);
 }
-
 .input-group-custom input:focus,
 .input-group-custom input:not(:placeholder-shown) {
   border-color: var(--accent);
   box-shadow: 0 0 18px rgba(34,211,238,.35);
 }
-
 .input-group-custom input:focus + label,
 .input-group-custom input:not(:placeholder-shown) + label {
   top: -10px;
@@ -206,7 +226,6 @@ footer {
   opacity: 1;
   color: var(--accent);
 }
-
 .signup-btn {
   width: 100%;
   margin-top: 35px;
@@ -219,12 +238,10 @@ footer {
   transition: .4s;
   cursor: pointer;
 }
-
 .signup-btn:hover {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 15px 40px rgba(34,211,238,.5);
 }
-
 .alt-link {
   margin-top: 20px;
   text-align: center;
@@ -236,31 +253,29 @@ footer {
   text-decoration: none;
   cursor: pointer;
 }
-/* ================= LOGIN PAGE STYLES ================= */
+
+/* LOGIN PAGE STYLES */
 .container-box {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 60px; /* Space for navbar */
+  padding-top: 60px;
   animation: slideIn 0.6s ease forwards;
 }
-
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(80px); }
   to { opacity: 1; transform: translateX(0); }
 }
-
 .card-box {
   background: var(--card);
-  backdrop-filter: blur(18px); /* The "Glass" effect */
+  backdrop-filter: blur(18px);
   border-radius: 22px;
   padding: 35px;
   max-width: 420px;
   width: 100%;
   box-shadow: 0 30px 60px rgba(0,0,0,0.25);
 }
-
 .login-btn {
   background: linear-gradient(90deg, var(--accent), var(--accent2));
   border-radius: 30px;
@@ -271,12 +286,9 @@ footer {
   width: 100%;
   transition: transform 0.2s;
 }
-
 .login-btn:hover {
   transform: scale(1.02);
 }
-
-/* Bootstrap Floating Label Override for our Theme */
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label {
   color: var(--accent);
@@ -286,46 +298,31 @@ footer {
   border-color: var(--accent);
   box-shadow: 0 0 0 0.25rem rgba(14, 165, 164, 0.25);
 }
-/* ================= CONTRIBUTORS SCROLL & GLOW ================= */
 
-/* Glow effect for the Leader Card */
+/* CONTRIBUTORS SCROLL */
 .leader-card {
-  box-shadow: 0 20px 50px rgba(14, 165, 164, 0.4); /* Using your accent color */
+  box-shadow: 0 20px 50px rgba(14, 165, 164, 0.4);
   border: 2px solid var(--accent);
 }
-
-/* Container that hides overflow */
 .scroll-container {
   overflow: hidden;
   padding: 20px 0;
-  white-space: nowrap; /* Ensures cards stay in a single line */
+  white-space: nowrap;
   position: relative;
 }
-
-/* The track that actually moves */
 .scroll-track {
   display: inline-block;
-  animation: scroll 30s linear infinite; /* Adjust '30s' for speed */
+  animation: scroll 30s linear infinite;
 }
-
-/* Pause animation on hover for better UX */
 .scroll-track:hover {
   animation-play-state: paused;
 }
-
-/* The scrolling animation definition */
 @keyframes scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    /* Move by 50% because we have duplicated the list */
-    transform: translateX(-50%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
-/* ================= HERO & ABOUT EXTRAS ================= */
 
-/* Typing Cursor Animation */
+/* HERO EXTRAS */
 .typing-cursor {
   display: inline-block;
   width: 2px;
@@ -335,8 +332,6 @@ footer {
   animation: blink 0.8s infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
-
-/* The Graph Card */
 .graph-card {
   background: var(--card);
   padding: 20px;
@@ -344,8 +339,6 @@ footer {
   box-shadow: 0 20px 40px rgba(0,0,0,.15);
   margin-top: 20px;
 }
-
-/* Simple CSS Bar Chart (No library needed!) */
 .simple-chart {
   display: flex;
   align-items: flex-end;
@@ -369,8 +362,6 @@ footer {
   font-size: 0.8rem;
   color: #666;
 }
-
-/* Image Slider (Marquee) */
 .slider-container {
   background: var(--card);
   padding: 20px;
@@ -383,7 +374,7 @@ footer {
   display: flex;
   gap: 20px;
   animation: slide 20s linear infinite;
-  width: max-content; /* Important for scrolling */
+  width: max-content;
 }
 .slider-track img {
   width: 300px;
@@ -395,52 +386,46 @@ footer {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-
-/* Highlights */
 .highlight {
   font-weight: 700;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-/* ================= INSIGHTS SECTION ================= */
+
+/* INSIGHTS */
 .insights-card {
-  background: white;
+  background: var(--card); /* Changed to use variable */
   border-radius: 20px;
   padding: 40px 30px;
   text-align: center;
   box-shadow: 0 20px 40px rgba(0,0,0,0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  flex: 1; /* Makes all cards equal width */
+  flex: 1;
   min-width: 280px;
   border-bottom: 4px solid transparent;
 }
-
 .insights-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 30px 60px rgba(14, 165, 164, 0.15);
   border-bottom: 4px solid var(--accent);
 }
-
 .insight-icon {
   font-size: 2.5rem;
   color: var(--accent);
   margin-bottom: 20px;
 }
-
 .insight-title {
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text); /* Changed to use variable */
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
-
 .insight-text {
-  color: #64748b;
+  color: var(--text); /* Changed to use variable */
   font-size: 0.95rem;
   line-height: 1.6;
 }
-
 .stat-row {
   display: flex;
   justify-content: space-around;
@@ -448,35 +433,222 @@ footer {
 }
 .stat-item h4 {
   font-weight: 800;
-  color: #1e293b;
+  color: var(--text); /* Changed to use variable */
   margin: 0;
   font-size: 1.4rem;
 }
 .stat-item span {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--text); /* Changed to use variable */
+}
+
+/* =======================================================
+   3. GLOBAL DARK MODE FIXES (THE NUCLEAR FIX)
+   ======================================================= */
+
+/* 1. FORCE Backgrounds */
+body.dark-mode,
+body.dark-mode #root,
+body.dark-mode main,
+body.dark-mode section,
+body.dark-mode footer,
+body.dark-mode .signup-wrapper,
+body.dark-mode .container-box {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+/* 2. FORCE Dark Cards (Uses global --card variable) */
+body.dark-mode .card,
+body.dark-mode .shadow-sm,
+body.dark-mode .shadow-lg,
+body.dark-mode .why-aps-card,    
+body.dark-mode .insights-card,  
+body.dark-mode .contributor-card,
+body.dark-mode .leader-card,    
+body.dark-mode .signup-card,    
+body.dark-mode .card-box {      
+    background-color: var(--card) !important;
+    color: var(--text) !important;
+    border-color: #334155 !important;
+}
+
+/* 3. ☢️ THE TEXT OVERRIDE (This fixes the black text) ☢️ */
+/* We target every possible text element directly */
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode div,
+body.dark-mode li,
+body.dark-mode strong,
+body.dark-mode b,
+body.dark-mode label,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+    color: var(--text) !important; 
+}
+
+/* 4. OVERRIDE BOOTSTRAP GREY TEXT */
+body.dark-mode .text-muted,
+body.dark-mode .text-secondary,
+body.dark-mode .text-dark,
+body.dark-mode .text-black-50 {
+    color: #cbd5e1 !important; /* Force Light Grey */
+}
+
+/* 5. Inputs */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode .form-control {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+}
+body.dark-mode input::placeholder {
+    color: #94a3b8 !important;
+}
+body.dark-mode .input-group-custom input:focus,
+body.dark-mode .input-group-custom input:not(:placeholder-shown) {
+    /* Use the global accent for glow in dark mode */
+    border-color: var(--accent);
+    box-shadow: 0 0 18px rgba(14, 165, 164, 0.55);
+}
+body.dark-mode .input-group-custom input:focus + label,
+body.dark-mode .input-group-custom input:not(:placeholder-shown) + label {
+    background: var(--card); /* Fixes the label background when active */
+}
+
+/* 6. Navbar & Links */
+body.dark-mode .navbar {
+    background-color: var(--card) !important;
+    border-bottom: 1px solid var(--admin-hr-color) !important;
+}
+body.dark-mode .nav-link { color: var(--nav-link) !important; }
+body.dark-mode .nav-link:hover { color: var(--nav-hover) !important; }
+body.dark-mode a:not(.btn):not(.nav-link) { color: #38bdf8 !important; }
+
+/* =======================================================
+   4. THEME CARD OVERRIDES (Used in Hero, Contributor, Admin Stats)
+   ======================================================= */
+
+/* Force all cards with 'theme-card' to behave */
+.theme-card {
+    background-color: var(--card); /* Base color */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* The text inside the cards (ensuring light mode contrast) */
+.theme-card h3, 
+.theme-card h5 { color: #1e293b; } 
+.theme-card p { color: #64748b; } 
+
+/* DARK MODE OVERRIDES for theme-card content */
+.dark .theme-card, .dark-mode .theme-card {
+    background-color: #1e293b !important; 
+    border: 1px solid #334155 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+.dark .theme-card h3, .dark-mode .theme-card h3,
+.dark .theme-card h5, .dark-mode .theme-card h5 {
+    color: #f1f5f9 !important;
+}
+.dark .theme-card p, .dark-mode .theme-card p {
+    color: #cbd5e1 !important;
+}
+
+/* =======================================================
+   5. FEATURE SPECIFIC FIXES (Tags, Tables, Buttons)
+   ======================================================= */
+
+/* --- TAG AND SCORE BOX COLORS (Used in HeroSection/How APS Works) --- */
+
+/* Default (Light Mode) Tag Colors */
+.tag-teal { background: #e0f2f1; color: #00695c; }
+.tag-blue { background: #e3f2fd; color: #1565c0; }
+.tag-purple { background: #f3e5f5; color: #7b1fa2; }
+
+/* Default (Light Mode) Score Box Colors */
+.score-box-default { background: #f8fafc; border: 1px solid #e2e8f0; transition: background-color 0.3s ease, border-color 0.3s ease; }
+.score-box-success { background: #f0fdf4; border: 1px solid #bbf7d0; transition: background-color 0.3s ease, border-color 0.3s ease; }
+
+/* Dark Mode Overrides (Tags) */
+.dark .tag-teal, .dark-mode .tag-teal { background: #064e3b !important; color: #a7f3d0 !important; }
+.dark .tag-blue, .dark-mode .tag-blue { background: #1e3a8a !important; color: #bfdbfe !important; }
+.dark .tag-purple, .dark-mode .tag-purple { background: #4a044e !important; color: #f0abfc !important; }
+
+/* Dark Mode Overrides (Score Boxes) */
+.dark .score-box-default, .dark-mode .score-box-default { background: #0f172a !important; border-color: #334155 !important; }
+.dark .score-box-success, .dark-mode .score-box-success { background: #064e3b !important; border-color: #34d399 !important; }
+
+
+/* --- ADMIN PORTAL TABLE FIXES (Records.jsx) --- */
+
+/* 1. Force Bootstrap Tables to be Dark */
+.dark .table, .dark-mode .table {
+    --bs-table-bg: #1e293b !important; 
+    --bs-table-striped-bg: #1e293b !important;
+    --bs-table-hover-bg: #334155 !important;
+    color: var(--text) !important;
+    border-color: #334155 !important;
+    background-color: #1e293b !important;
+}
+
+/* 2. Fix the Table Header Background/Text (The "White Ribbon") */
+.table-themed-head { background-color: #f8f9fa !important; }
+.dark .table-themed-head, .dark-mode .table-themed-head, .dark .table thead, .dark-mode .table thead {
+    background-color: #0f172a !important; 
+    color: #cbd5e1 !important; 
+    border-color: #334155 !important;
+}
+.dark .table-themed-head th, .dark-mode .table-themed-head th {
+    color: #94a3b8 !important; 
+    background-color: #0f172a !important;
+}
+
+/* 3. Table Row and Hover */
+.dark .table-themed-row, .dark-mode .table-themed-row { border-color: #334155; }
+.dark .table-themed-row:hover, .dark-mode .table-themed-row:hover { background-color: #1e293b !important; }
+
+
+/* 4. Fix Top Performer Badge Text */
+.dark .badge.bg-warning, .dark-mode .badge.bg-warning, .dark .text-dark, .dark-mode .text-dark {
+    color: #000000 !important;
+}
+
+/* 5. Fix View Report Button */
+.table-themed-button { color: #475569; border-color: #cbd5e1; }
+.dark .table-themed-button, .dark-mode .table-themed-button {
+    color: var(--text) !important;
+    border-color: #64748b !important;
+    background-color: transparent !important;
 }
 
 
-/* Enhanced Card Style with Bottom Highlight */
-.why-aps-card {
-  background: white;
-  padding: 25px;
-  border-radius: 18px;
-  
-  /* 1. The Green/Teal Highlight at the Bottom */
-  border-bottom: 6px solid #0ea5a4; 
-  
-  /* 2. A subtle matching glow for the "highlighted" feel */
-  box-shadow: 0 15px 35px rgba(14, 165, 164, 0.12);
-  
-  flex: 1;
-  transition: transform 0.3s ease;
+/* --- SCHEDULE SECTION FIXES --- */
+
+/* 1. Date Box Styling (Default/Light Mode) */
+.schedule-date-box { display: flex; flex-direction: column; justify-content: center; align-items: center; transition: background-color 0.3s ease, color 0.3s ease; }
+.schedule-date-month { font-size: 14px; font-weight: bold; }
+.schedule-date-day { font-size: 28px; font-weight: bold; line-height: 1; }
+
+.schedule-date-box[data-status="Open"], .schedule-date-box[data-status="Upcoming"] { background-color: #e0f2fe; color: #0ea5a4; }
+.schedule-date-box[data-status="Locked"] { background-color: #f3f4f6; color: #64748b; }
+
+/* 2. DARK MODE OVERRIDES (Date Boxes) */
+.dark .schedule-date-box[data-status="Open"], .dark-mode .schedule-date-box[data-status="Open"],
+.dark .schedule-date-box[data-status="Upcoming"], .dark-mode .schedule-date-box[data-status="Upcoming"] {
+    background-color: #0f172a !important; 
+    color: #0ea5a4 !important; 
 }
-
-.why-aps-card:hover {
-  transform: translateY(-5px); /* Gentle float up on hover */
-  box-shadow: 0 20px 40px rgba(14, 165, 164, 0.2);
+.dark .schedule-date-box[data-status="Locked"], .dark-mode .schedule-date-box[data-status="Locked"] {
+    background-color: #334155 !important; 
+    color: #cbd5e1 !important; 
 }
+.dark .schedule-date-box[data-status="Locked"] span, .dark-mode .schedule-date-box[data-status="Locked"] span { color: inherit !important; }
 
-
+/* 3. Button Fixes */
+.schedule-button-secondary { color: #64748b !important; border-color: #cbd5e1 !important; }
+.dark .schedule-button-secondary, .dark-mode .schedule-button-secondary {
+    color: var(--nav-link) !important;
+    border-color: #64748b !important;
+}

@@ -21,7 +21,7 @@ export default function ContributorsSection() {
   return (
     <section id="team" style={{ 
       paddingTop: '40px', 
-      paddingBottom: '0px', /* <--- ZERO padding at bottom so it touches the strip */
+      paddingBottom: '0px', 
       textAlign: 'center', 
       overflow: 'hidden' 
     }}>
@@ -37,21 +37,22 @@ export default function ContributorsSection() {
         Contributors
       </h2>
 
-      {/* --- TOP SECTION: LEADER & MENTOR (Layout Preserved) --- */}
+      {/* --- TOP SECTION: LEADER & MENTOR --- */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
         gap: '22px', 
-        marginBottom: '10px', /* Kept this gap small as requested */
+        marginBottom: '10px', 
         flexWrap: 'wrap',
         padding: '0 20px'
       }}>
         {leaders.map((person, index) => (
           <div 
             key={index} 
-            className="hover-card"
+            // ADDED: "theme-card" class
+            className="hover-card theme-card"
             style={{
-              background: 'white',
+              // REMOVED: background: 'white' (Now handled in CSS below)
               width: '475px', 
               padding: '25px',
               borderRadius: '20px',
@@ -60,7 +61,7 @@ export default function ContributorsSection() {
                 ? '0 10px 40px rgba(34, 211, 238, 0.4)' 
                 : '0 10px 30px rgba(0,0,0,0.08)',
               border: person.isLeader ? '2px solid rgba(34, 211, 238, 0.3)' : 'none',
-              transition: 'transform 0.4s ease, box-shadow 0.4s ease',
+              transition: 'transform 0.4s ease, box-shadow 0.4s ease, background-color 0.3s ease',
               cursor: 'pointer',
               display: 'flex',       
               flexDirection: 'column',
@@ -80,10 +81,12 @@ export default function ContributorsSection() {
                 marginBottom: '10px' 
               }} 
             />
-            <h3 style={{ fontWeight: '800', margin: '5px 0', fontSize: '1.6rem', color: '#1e293b' }}>
+            {/* ADDED: theme-text-primary class */}
+            <h3 className="theme-text-primary" style={{ fontWeight: '800', margin: '5px 0', fontSize: '1.6rem' }}>
               {person.name}
             </h3>
-            <p style={{ color: '#64748b', margin: 0, fontSize: '1rem', fontWeight: '500' }}>
+            {/* ADDED: theme-text-secondary class */}
+            <p className="theme-text-secondary" style={{ margin: 0, fontSize: '1rem', fontWeight: '500' }}>
               {person.role}
             </p>
           </div>
@@ -91,21 +94,23 @@ export default function ContributorsSection() {
       </div>
 
       
+      {/* --- SCROLLING TEAM SECTION --- */}
       <div className="scroll-container" style={{ marginTop: '0px' }}>
         <div className="scroll-track" style={{ paddingBottom: '30px'  }}>
           {scrollingTeam.map((member, index) => (
             <div 
               key={index} 
-              className="contributor-card hover-card" 
+              // ADDED: "theme-card" class
+              className="contributor-card hover-card theme-card" 
               style={{ 
                 display: 'inline-block', 
                 margin: '11px', 
-                background: 'white',
+                // REMOVED: background: 'white'
                 padding: '15px',
                 borderRadius: '18px',
                 boxShadow: '0 10px 20px rgba(0,0,0,0.06)',
                 width: '280px', 
-                transition: 'transform 0.3s ease',
+                transition: 'transform 0.3s ease, background-color 0.3s ease',
                 cursor: 'pointer'
               }}
             >
@@ -121,10 +126,12 @@ export default function ContributorsSection() {
                   marginBottom: '10px' 
                 }} 
               />
-              <h5 style={{ fontWeight: '700', margin: '5px 0', fontSize: '1.1rem', color: '#1e293b' }}>
+               {/* ADDED: theme-text-primary class */}
+              <h5 className="theme-text-primary" style={{ fontWeight: '700', margin: '5px 0', fontSize: '1.1rem' }}>
                 {member.name}
               </h5>
-              <p style={{ color: '#64748b', margin: 0, fontSize: '0.9rem' }}>
+               {/* ADDED: theme-text-secondary class */}
+              <p className="theme-text-secondary" style={{ margin: 0, fontSize: '0.9rem' }}>
                 {member.role}
               </p>
             </div>
@@ -133,6 +140,38 @@ export default function ContributorsSection() {
       </div>
 
       <style>{`
+        /* --- DEFAULT (Light Mode) --- */
+        .theme-card {
+            background-color: white;
+        }
+        .theme-text-primary {
+            color: #1e293b; /* Dark Slate */
+        }
+        .theme-text-secondary {
+            color: #64748b; /* Slate Gray */
+        }
+
+        /* --- DARK MODE OVERRIDES --- */
+        /* This checks if a parent (like body) has the class 'dark' or 'dark-mode' */
+        :global(body.dark) .theme-card,
+        :global(body.dark-mode) .theme-card,
+        :global(.dark) .theme-card {
+            background-color: #1e293b !important; /* Dark Blue Background */
+            border: 1px solid #334155;
+        }
+
+        :global(body.dark) .theme-text-primary,
+        :global(body.dark-mode) .theme-text-primary,
+        :global(.dark) .theme-text-primary {
+            color: #f1f5f9 !important; /* White Text */
+        }
+
+        :global(body.dark) .theme-text-secondary,
+        :global(body.dark-mode) .theme-text-secondary,
+        :global(.dark) .theme-text-secondary {
+            color: #cbd5e1 !important; /* Light Gray Text */
+        }
+
         /* Hover Animation */
         .hover-card:hover {
           transform: translateY(-8px) scale(1.02) !important;
