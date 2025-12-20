@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Schedule() {
-  // Mock Data for Upcoming Events (Matches the tiles in the image)
+  
   const upcomingEvents = [
     {
       id: 1,
@@ -11,7 +11,7 @@ export default function Schedule() {
       time: "10:00 AM",
       duration: "90 mins",
       status: "Open",
-      color: "#e0f2fe", // Light blue for date box (will be overridden in CSS)
+      color: "#e0f2fe", 
       textColor: "#0ea5a4"
     },
     {
@@ -33,7 +33,7 @@ export default function Schedule() {
       time: "11:00 AM",
       duration: "180 mins",
       status: "Locked",
-      color: "#f3f4f6", // Grey for locked/far future (will be overridden in CSS)
+      color: "#f3f4f6", // FIXED: Removed the random '/'
       textColor: "#64748b"
     }
   ];
@@ -43,12 +43,9 @@ export default function Schedule() {
       {/* 1. Header Section */}
       <div className="d-flex justify-content-between align-items-center mb-5">
         <div>
-          {/* ADDED: theme-text-primary */}
           <h2 className="theme-text-primary" style={{ fontWeight: 'bold' }}>Exam Schedule</h2>
-          {/* ADDED: theme-text-secondary */}
           <p className="text-muted theme-text-secondary">Browse and register for upcoming contests</p>
         </div>
-        {/* Helper text or filter could go here */}
       </div>
 
       {/* 2. Schedule Tiles (Cards) */}
@@ -57,19 +54,16 @@ export default function Schedule() {
             {upcomingEvents.map((event) => (
                 <div 
                   key={event.id} 
-                  // ADDED: theme-card class
                   className="card theme-card shadow-sm mb-4" 
                   style={{ borderRadius: '15px', transition: 'transform 0.2s' }}
                 >
                     <div className="card-body p-4">
                         <div className="d-flex align-items-center flex-wrap">
                             
-                            {/* Date Box (The blue/grey square) */}
+                            {/* Date Box */}
                             <div className="schedule-date-box" 
-                                // Added a class to control background/text colors
                                 data-status={event.status} 
                                 style={{ 
-                                    // Removed hardcoded background color (now controlled by CSS)
                                     width: '80px', 
                                     height: '80px', 
                                     borderRadius: '15px',
@@ -81,14 +75,11 @@ export default function Schedule() {
 
                             {/* Event Details */}
                             <div className="flex-grow-1 my-2 me-4 ms-4">
-                                {/* ADDED: theme-text-primary */}
                                 <h4 className="fw-bold mb-1 theme-text-primary">{event.title}</h4>
-                                {/* ADDED: theme-text-secondary and schedule-text */}
                                 <div className="text-muted d-flex align-items-center schedule-text theme-text-secondary">
                                     <i className="fa-regular fa-clock me-2"></i>
                                     <span>{event.time} ({event.duration})</span>
                                     <span className="mx-2">•</span>
-                                    {/* Status color is custom, so we keep it inline or define a status class */}
                                     <span style={{ 
                                         color: event.status === 'Open' ? '#10b981' : '#64748b', 
                                         fontWeight: '600' 
@@ -109,14 +100,13 @@ export default function Schedule() {
                                               borderRadius: '25px',
                                               fontWeight: '600'
                                           }}>
-                                        Register Now
+                                            Register Now
                                     </button>
                                 ) : (
-                                    // ADDED: schedule-button-secondary
                                     <button className="btn btn-outline-secondary px-4 py-2 schedule-button-secondary" 
                                           disabled
                                           style={{ borderRadius: '25px' }}>
-                                        Notify Me
+                                            Notify Me
                                     </button>
                                 )}
                             </div>

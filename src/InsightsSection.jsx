@@ -45,7 +45,7 @@ export default function InsightsSection() {
             </button>
           </div>
 
-          {/* CARD 2: PLATFORM STATUS */}
+          {/* CARD 2: SYSTEM STATUS */}
           <div className="insights-card">
             <i className="fa-solid fa-server insight-icon"></i>
             <h3 className="insight-title">Platform Status</h3>

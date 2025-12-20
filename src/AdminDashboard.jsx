@@ -1,275 +1,547 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { auth } from './firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth'; 
-// ------------------------------------------------------------------
-// --- IMPORTANT: CHANGE IMPORTS TO USE ADMIN-SCOPED COMPONENTS ---
+
 import AdminRecords from './AdminRecords';
 import AdminSchedule from './AdminSchedule';
-// ------------------------------------------------------------------
+import LiveMonitoringTable from './LiveMonitoringTable'; 
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('schedule');
   const [adminName, setAdminName] = useState('Admin'); 
+  const [isDarkMode, setIsDarkMode] = useState(document.body.classList.contains('dark-mode'));
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const isAdminLocal = localStorage.getItem('isAdminLoggedIn');
+
       if (user && user.displayName) {
         setAdminName(user.displayName); 
-      } else if (!user) {
+      } else if (!user && !isAdminLocal) {
         navigate('/admin-login'); 
       }
     });
+    
+    
+    const checkTheme = () => {
+      setIsDarkMode(document.body.classList.contains('dark-mode'));
+    };
+    checkTheme();
+    
     return () => unsubscribe();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    navigate('/login'); 
+    try {
+        await signOut(auth);
+        localStorage.removeItem('isAdminLoggedIn'); 
+        localStorage.removeItem('adminName');
+        navigate('/admin-login'); 
+    } catch (error) {
+        console.error("Logout failed", error);
+    }
   };
 
   return (
-    // Replaced hardcoded background color with a CSS variable
-    <div className="admin-page-bg" style={{ minHeight: '100vh', paddingBottom: '2rem' }}>
+    <div className="admin-page-bg" style={{ minHeight: '100vh', paddingBottom: '2rem', position: 'relative' }}>
       
-      {/* 🛡️ TOP BAR - Added class admin-nav-bar */}
-      <nav className="navbar fixed-top shadow-sm admin-nav-bar" style={{ borderBottom: '2px solid #0ea5a4', zIndex: 1000 }}>
-        <div className="container-fluid px-5" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div className="d-flex align-items-center">
-                <span className="theme-text-primary" style={{ fontSize: '1.5rem', marginRight: '10px' }}>🛡️</span>
-                {/* Added theme-text-primary */}
-                <span className="fw-bold theme-text-primary" style={{ fontSize: '1.25rem', color: '#0f172a', letterSpacing: '1px' }}>
+      {/* bg */}
+      <div className="position-fixed top-0 start-0 w-100 h-100" style={{ zIndex: -1, pointerEvents: 'none' }}>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          right: '10%',
+          width: '400px',
+          height: '400px',
+          borderRadius: '50%',
+          background: isDarkMode ? 
+            'radial-gradient(circle, rgba(14, 165, 164, 0.12) 0%, transparent 70%)' : 
+            'radial-gradient(circle, rgba(14, 165, 164, 0.08) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          animation: 'float-particle-1 20s ease-in-out infinite'
+        }}></div>
+      </div>
+      
+      {/* nav bar */}
+      <nav className="navbar fixed-top admin-nav-bar" style={{ 
+        zIndex: 1000,
+        background: isDarkMode ? 
+          'rgba(15, 23, 42, 0.9)' : 
+          'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: isDarkMode ? 
+          '1px solid rgba(14, 165, 164, 0.2)' : 
+          '1px solid rgba(14, 165, 164, 0.1)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+      }}>
+        <div className="container-fluid px-4 px-lg-5 py-2" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="d-flex align-items-center gap-3">
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '12px',
+                  background: isDarkMode ? 
+                    'linear-gradient(135deg, rgba(14, 165, 164, 0.2), rgba(14, 165, 164, 0.1))' : 
+                    'linear-gradient(135deg, rgba(14, 165, 164, 0.15), rgba(14, 165, 164, 0.05))',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: isDarkMode ? 
+                    '1px solid rgba(14, 165, 164, 0.3)' : 
+                    '1px solid rgba(14, 165, 164, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}>
+                    <span style={{ 
+                      fontSize: '1.2rem',
+                      color: isDarkMode ? '#5eead4' : '#0ea5a4',
+                      filter: 'drop-shadow(0 0 8px rgba(14, 165, 164, 0.3))'
+                    }}>🛡️</span>
+                </div>
+                <div>
+                  <span className="fw-bold" style={{ 
+                    fontSize: '1.1rem',
+                    color: isDarkMode ? '#f1f5f9' : '#0f172a',
+                    letterSpacing: '0.5px'
+                  }}>
                     ADMIN PORTAL
-                </span>
+                  </span>
+                  <div style={{ 
+                    fontSize: '0.75rem',
+                    color: isDarkMode ? '#94a3b8' : '#64748b',
+                    letterSpacing: '0.3px'
+                  }}>
+                    Powered by APS-System
+                  </div>
+                </div>
             </div>
-            <div className="d-flex align-items-center gap-4">
-                {/* Added theme-text-secondary */}
-                <a href="/" className="text-decoration-none fw-bold theme-text-secondary" style={{ fontSize: '0.95rem' }}>
-                    Home
+            <div className="d-flex align-items-center gap-3">
+                
+                {/* Live Monitor Btn  */}
+                <Link 
+                  to="/live-monitor" 
+                  className="btn d-flex align-items-center gap-2 px-4 py-2 rounded-pill fw-bold shadow-sm"
+                  style={{
+                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    color: 'white',
+                    border: 'none',
+                    fontSize: '0.9rem',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(239, 68, 68, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.2)';
+                  }}
+                >
+                  <span style={{ fontSize: '0.9rem' }}>🔴</span>
+                  Live Monitor
+                </Link>
+
+                {/* home btn */}
+                <a 
+                  href="/" 
+                  className="text-decoration-none d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                  style={{
+                    color: isDarkMode ? '#cbd5e1' : '#475569',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    background: isDarkMode ? 
+                      'rgba(255, 255, 255, 0.05)' : 
+                      'rgba(0, 0, 0, 0.02)',
+                    border: isDarkMode ? 
+                      '1px solid rgba(255, 255, 255, 0.1)' : 
+                      '1px solid rgba(0, 0, 0, 0.05)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = isDarkMode ? 
+                      'rgba(255, 255, 255, 0.1)' : 
+                      'rgba(0, 0, 0, 0.05)';
+                    e.target.style.color = isDarkMode ? '#f8fafc' : '#0f172a';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = isDarkMode ? 
+                      'rgba(255, 255, 255, 0.05)' : 
+                      'rgba(0, 0, 0, 0.02)';
+                    e.target.style.color = isDarkMode ? '#cbd5e1' : '#475569';
+                  }}
+                >
+                  <i className="fa-solid fa-house" style={{ fontSize: '0.8rem' }}></i>
+                  Home
                 </a>
-                <button onClick={handleLogout} className="btn btn-danger btn-sm px-3 rounded-pill fw-bold">
-                    Logout
+
+                {/*  */}
+                <button 
+                  onClick={handleLogout} 
+                  className="btn d-flex align-items-center gap-2 px-4 py-2 rounded-pill fw-bold"
+                  style={{
+                    color: '#ef4444',
+                    background: isDarkMode ? 
+                      'rgba(239, 68, 68, 0.1)' : 
+                      'rgba(239, 68, 68, 0.05)',
+                    border: isDarkMode ? 
+                      '1px solid rgba(239, 68, 68, 0.3)' : 
+                      '1px solid rgba(239, 68, 68, 0.2)',
+                    fontSize: '0.9rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = isDarkMode ? 
+                      'rgba(239, 68, 68, 0.2)' : 
+                      'rgba(239, 68, 68, 0.1)';
+                    e.target.style.color = '#dc2626';
+                    e.target.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = isDarkMode ? 
+                      'rgba(239, 68, 68, 0.1)' : 
+                      'rgba(239, 68, 68, 0.05)';
+                    e.target.style.color = '#ef4444';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <i className="fa-solid fa-arrow-right-from-bracket" style={{ fontSize: '0.8rem' }}></i>
+                  Logout
                 </button>
             </div>
         </div>
       </nav>
 
-      {/* 🌟 DECORATIVE BACKGROUND HEADER (Kept as is - it's dark in both modes) */}
+      {/*  */}
       <div style={{ 
-          background: 'linear-gradient(135deg, #0ea5a4 0%, #0f172a 100%)', 
-          height: '250px', 
+          background: isDarkMode ? 
+            'linear-gradient(135deg, rgba(14, 165, 164, 0.2) 0%, rgba(15, 23, 42, 0.9) 100%)' : 
+            'linear-gradient(135deg, rgba(14, 165, 164, 0.1) 0%, rgba(241, 245, 249, 1) 100%)', 
+          height: '280px', 
           width: '100%', 
           position: 'absolute', 
           top: 0, 
           left: 0,
-          zIndex: 0
+          zIndex: 0,
+          borderBottom: isDarkMode ? 
+            '1px solid rgba(14, 165, 164, 0.1)' : 
+            '1px solid rgba(14, 165, 164, 0.05)'
       }}></div>
       
-      {/* MAIN CONTENT CONTAINER */}
-      <div className="container-fluid px-5" style={{ position: 'relative', zIndex: 1, paddingTop: '100px' }}>
+      {/* MAIN CONTENT */}
+      <div className="container-fluid px-4 px-lg-5" style={{ position: 'relative', zIndex: 1, paddingTop: '100px' }}>
         <div className="row g-4">
           
-          {/* 🟢 SIDEBAR: PROFILE */}
+          {/* SIDEBAR */}
           <div className="col-md-3">
-            {/* Added theme-card class, removed hardcoded background color */}
-            <div className="card theme-card border-0 shadow-lg p-4 text-center h-100 sidebar-card" style={{ borderRadius: '20px' }}>
+            <div className="card border-0 p-4 h-100" style={{ 
+              borderRadius: '20px',
+              background: isDarkMode ? 
+                'rgba(30, 41, 59, 0.7)' : 
+                'rgba(255, 255, 255, 0.8)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: isDarkMode ? 
+                '1px solid rgba(255, 255, 255, 0.1)' : 
+                '1px solid rgba(255, 255, 255, 0.5)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
+            }}>
               <div className="mb-4">
-                {/* Profile Circle is fine */}
                 <div 
-                    className="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3 shadow-sm"
-                    style={{ width: '100px', height: '100px', background: '#d1fae5', color: '#10b981', fontSize: '2.5rem', border: '4px solid white' }}
+                    className="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3"
+                    style={{ 
+                      width: '100px', 
+                      height: '100px', 
+                      background: isDarkMode ? 
+                        'linear-gradient(135deg, rgba(14, 165, 164, 0.3), rgba(14, 165, 164, 0.1))' : 
+                        'linear-gradient(135deg, rgba(14, 165, 164, 0.2), rgba(14, 165, 164, 0.05))',
+                      color: isDarkMode ? '#5eead4' : '#0ea5a4',
+                      fontSize: '2.5rem',
+                      border: isDarkMode ? 
+                        '3px solid rgba(14, 165, 164, 0.3)' : 
+                        '3px solid rgba(14, 165, 164, 0.2)',
+                      fontWeight: '700',
+                      boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)'
+                    }}
                 >
                     {adminName.charAt(0).toUpperCase()}
                 </div>
-                {/* ADDED: theme-text-primary */}
-                <h3 className="fw-bold mb-0 theme-text-primary">{adminName}</h3>
-                {/* ADDED: theme-text-secondary */}
-                <p className="text-muted small theme-text-secondary">Senior Administrator</p>
-                <div className="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mt-2">
-                    Verified Organisation
-                </div>
-              </div>
-              <hr className="my-4 theme-hr" />
-              <div className="text-start px-2">
-                {/* ADDED: theme-text-secondary */}
-                <p className="text-uppercase small fw-bold mb-3 theme-text-secondary" style={{letterSpacing: '1px'}}>Overview</p>
                 
-                {/* Overview Details */}
-                <div className="d-flex justify-content-between mb-2">
-                    <span className="theme-text-secondary"><i className="fa-solid fa-list-check me-2"></i>Tests Organized</span>
-                    <span className="fw-bold theme-text-primary">12</span>
-                </div>
-                <div className="d-flex justify-content-between">
-                    <span className="theme-text-secondary"><i className="fa-solid fa-laptop-code me-2"></i>Active Labs</span>
-                    <span className="fw-bold theme-text-primary">4</span>
+                {/*  */}
+                <div className="text-center">
+                  <h3 className="fw-bold mb-0" style={{ 
+                    color: isDarkMode ? '#f8fafc' : '#0f172a',
+                    fontSize: '1.3rem',
+                    textAlign: 'center'
+                  }}>{adminName}</h3>
+                  <div className="d-flex align-items-center justify-content-center gap-2 mt-2">
+                    <span style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: '#10b981',
+                      animation: 'pulse 2s infinite'
+                    }}></span>
+                    <p className="small mb-0" style={{ 
+                      color: isDarkMode ? '#94a3b8' : '#64748b',
+                      fontSize: '0.85rem',
+                      textAlign: 'center'
+                    }}>Senior Administrator</p>
+                  </div>
                 </div>
               </div>
-              <div className="mt-auto pt-4 d-grid gap-2">
-                 {/* ADDED: sidebar-btn class */}
-                 <button className="btn sidebar-btn fw-bold text-start">
-                    💳 Billing & Plans
-                 </button>
-                 {/* ADDED: sidebar-btn class */}
-                 <button className="btn sidebar-btn fw-bold text-start">
-                    ⚙️ Settings
-                 </button>
+              <hr style={{ 
+                border: 'none',
+                height: '1px',
+                background: isDarkMode ? 
+                  'linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent)' : 
+                  'linear-gradient(to right, transparent, rgba(0,0,0,0.1), transparent)',
+                margin: '1.5rem 0'
+              }} />
+              <div className="text-start px-1">
+                <p className="text-uppercase small fw-bold mb-3" style={{
+                  letterSpacing: '1px',
+                  color: isDarkMode ? '#94a3b8' : '#64748b'
+                }}>System Overview</p>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <span style={{ 
+                      color: isDarkMode ? '#cbd5e1' : '#475569',
+                      fontSize: '0.9rem'
+                    }}>Tests Organized</span>
+                    <span className="fw-bold" style={{ 
+                      color: isDarkMode ? '#f8fafc' : '#0f172a',
+                      fontSize: '1.1rem'
+                    }}>12</span>
+                </div>
+                <div className="d-flex justify-content-between align-items-center">
+                    <span style={{ 
+                      color: isDarkMode ? '#cbd5e1' : '#475569',
+                      fontSize: '0.9rem'
+                    }}>Active Labs</span>
+                    <span className="fw-bold" style={{ 
+                      color: isDarkMode ? '#f8fafc' : '#0f172a',
+                      fontSize: '1.1rem'
+                    }}>4</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* 🔵 RIGHT COLUMN: WORKSPACE */}
+          {/* WORKSPACE */}
           <div className="col-md-9">
-            
-            {/* Create Contest Card */}
-            {/* Added theme-card class, removed hardcoded background color */}
-            <div className="card theme-card border-0 shadow-lg p-4 mb-4 text-center" style={{ borderRadius: '20px' }}>
-                <h3 className="fw-bold mb-4" style={{ color: '#0ea5a4', letterSpacing: '0.5px' }}>
-                    🚀 Create New Contest
-                </h3>
-                
+            {/*  Contest Card */}
+            <div className="card border-0 p-4 mb-4" style={{ 
+              borderRadius: '20px',
+              background: isDarkMode ? 
+                'rgba(30, 41, 59, 0.7)' : 
+                'rgba(255, 255, 255, 0.8)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: isDarkMode ? 
+                '1px solid rgba(255, 255, 255, 0.1)' : 
+                '1px solid rgba(255, 255, 255, 0.5)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
+            }}>
+                <div className="d-flex align-items-center gap-3 mb-4">
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: isDarkMode ? 
+                      'linear-gradient(135deg, rgba(14, 165, 164, 0.2), rgba(14, 165, 164, 0.1))' : 
+                      'linear-gradient(135deg, rgba(14, 165, 164, 0.15), rgba(14, 165, 164, 0.05))',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: isDarkMode ? 
+                      '1px solid rgba(14, 165, 164, 0.3)' : 
+                      '1px solid rgba(14, 165, 164, 0.2)'
+                  }}>
+                    <span style={{ 
+                      fontSize: '1.2rem',
+                      color: isDarkMode ? '#5eead4' : '#0ea5a4'
+                    }}>🚀</span>
+                  </div>
+                  <h3 className="fw-bold mb-0" style={{ 
+                    color: isDarkMode ? '#f8fafc' : '#0f172a',
+                    background: 'linear-gradient(90deg, #0ea5a4, #22d3ee)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}>Create New Contest</h3>
+                </div>
                 <div className="row justify-content-center">
-                    <div className="col-md-8 text-start">
-                        {/* Compact Inputs */}
+                    <div className="col-lg-9 text-start">
                         <div className="row g-3">
                             <div className="col-md-6">
-                                {/* ADDED: theme-text-secondary, admin-input */}
-                                <label className="small mb-1 fw-bold theme-text-secondary">HackerRank Contest URL</label>
-                                <input type="text" className="form-control admin-input border-0" />
+                                <label className="small mb-2 fw-bold" style={{ 
+                                  color: isDarkMode ? '#94a3b8' : '#64748b'
+                                }}>HackerRank URL</label>
+                                <input 
+                                  type="text" 
+                                  className="form-control border-0 p-3" 
+                                  style={{
+                                    background: isDarkMode ? 
+                                      'rgba(255, 255, 255, 0.05)' : 
+                                      'rgba(0, 0, 0, 0.02)',
+                                    color: isDarkMode ? '#f8fafc' : '#0f172a',
+                                    borderRadius: '12px',
+                                    border: isDarkMode ? 
+                                      '1px solid rgba(255, 255, 255, 0.1)' : 
+                                      '1px solid rgba(0, 0, 0, 0.05)',
+                                    transition: 'all 0.3s ease'
+                                  }}
+                                  onFocus={(e) => {
+                                    e.target.style.border = isDarkMode ? 
+                                      '1px solid rgba(14, 165, 164, 0.5)' : 
+                                      '1px solid rgba(14, 165, 164, 0.3)';
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 164, 0.1)';
+                                  }}
+                                  onBlur={(e) => {
+                                    e.target.style.border = isDarkMode ? 
+                                      '1px solid rgba(255, 255, 255, 0.1)' : 
+                                      '1px solid rgba(0, 0, 0, 0.05)';
+                                    e.target.style.boxShadow = 'none';
+                                  }}
+                                />
                             </div>
                             <div className="col-md-6">
-                                {/* ADDED: theme-text-secondary, admin-input */}
-                                <label className="small mb-1 fw-bold theme-text-secondary">Contest Password</label>
-                                <input type="text" className="form-control admin-input border-0" />
-                            </div>
-                            <div className="col-md-12">
-                                {/* ADDED: theme-text-secondary, admin-input */}
-                                <label className="small mb-1 fw-bold theme-text-secondary">Duration (minutes)</label>
-                                <input type="number" className="form-control admin-input border-0" />
+                                <label className="small mb-2 fw-bold" style={{ 
+                                  color: isDarkMode ? '#94a3b8' : '#64748b'
+                                }}>Contest Password</label>
+                                <input 
+                                  type="text" 
+                                  className="form-control border-0 p-3"
+                                  style={{
+                                    background: isDarkMode ? 
+                                      'rgba(255, 255, 255, 0.05)' : 
+                                      'rgba(0, 0, 0, 0.02)',
+                                    color: isDarkMode ? '#f8fafc' : '#0f172a',
+                                    borderRadius: '12px',
+                                    border: isDarkMode ? 
+                                      '1px solid rgba(255, 255, 255, 0.1)' : 
+                                      '1px solid rgba(0, 0, 0, 0.05)',
+                                    transition: 'all 0.3s ease'
+                                  }}
+                                  onFocus={(e) => {
+                                    e.target.style.border = isDarkMode ? 
+                                      '1px solid rgba(14, 165, 164, 0.5)' : 
+                                      '1px solid rgba(14, 165, 164, 0.3)';
+                                    e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 164, 0.1)';
+                                  }}
+                                  onBlur={(e) => {
+                                    e.target.style.border = isDarkMode ? 
+                                      '1px solid rgba(255, 255, 255, 0.1)' : 
+                                      '1px solid rgba(0, 0, 0, 0.05)';
+                                    e.target.style.boxShadow = 'none';
+                                  }}
+                                />
                             </div>
                         </div>
-                        
                         <div className="text-center mt-4">
-                            <button 
-                                className="btn text-white px-5 py-2 rounded-pill fw-bold" 
-                                style={{ background: '#0ea5a4', fontSize: '1rem', boxShadow: '0 4px 14px rgba(14, 165, 164, 0.4)', transition: '0.3s' }}
-                            >
-                                <i className="fa-solid fa-play me-2"></i> Start Contest
+                            <button className="btn px-5 py-3 rounded-pill fw-bold" style={{ 
+                              background: 'linear-gradient(135deg, #0ea5a4, #0d9488)',
+                              color: 'white',
+                              border: 'none',
+                              fontSize: '1rem',
+                              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 8px 25px rgba(14, 165, 164, 0.3)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = 'none';
+                            }}>
+                                Start Contest
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Data Tabs Container */}
-            {/* Added theme-card class, removed hardcoded background color */}
-            <div className="card theme-card border-0 shadow-lg p-4" style={{ borderRadius: '20px', minHeight: '400px' }}>
-                <div className="d-flex gap-3 mb-4 border-bottom pb-3">
-                    {/* Schedule Button */}
+            {/* TABS SECTION - Premium */}
+            <div className="card border-0 p-4" style={{ 
+              borderRadius: '20px',
+              background: isDarkMode ? 
+                'rgba(30, 41, 59, 0.7)' : 
+                'rgba(255, 255, 255, 0.8)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: isDarkMode ? 
+                '1px solid rgba(255, 255, 255, 0.1)' : 
+                '1px solid rgba(255, 255, 255, 0.5)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+              minHeight: '400px'
+            }}>
+                {/* Tab Buttons - Premium */}
+                <div className="d-flex gap-3 mb-4">
                     <button 
-                        className={`btn rounded-pill px-4 tab-button ${activeTab === 'schedule' ? 'active' : 'inactive'}`}
+                        className={`d-flex align-items-center gap-2 px-4 py-3 rounded-pill border-0 fw-bold ${activeTab === 'schedule' ? 'active-tab' : 'inactive-tab'}`} 
                         onClick={() => setActiveTab('schedule')}
+                        style={{
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          fontSize: '0.95rem'
+                        }}
                     >
-                        📅 Exam Schedule
+                        <span style={{ fontSize: '1rem' }}>📅</span>
+                        Assessment Schedule
                     </button>
-                    {/* Records Button */}
                     <button 
-                        className={`btn rounded-pill px-4 tab-button ${activeTab === 'records' ? 'active' : 'inactive'}`}
+                        className={`d-flex align-items-center gap-2 px-4 py-3 rounded-pill border-0 fw-bold ${activeTab === 'records' ? 'active-tab' : 'inactive-tab'}`} 
                         onClick={() => setActiveTab('records')}
+                        style={{
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          fontSize: '0.95rem'
+                        }}
                     >
-                        📂 Student Records
+                        <span style={{ fontSize: '1rem' }}>📂</span>
+                        Records
                     </button>
                 </div>
                 
-                {/* Scrollable Area to keep height contained */}
-                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                    {/* --- FIXED: USING ADMIN-SCOPED COMPONENTS --- */}
+                <div>
                     {activeTab === 'schedule' && <AdminSchedule />}
                     {activeTab === 'records' && <AdminRecords />}
                 </div>
             </div>
-
           </div>
         </div>
       </div>
       
-      {/* Admin Dashboard Specific Styles */}
+      {/* Dynamic CSS */}
       <style>{`
-        /* CSS Variables for global colors used in fixed elements */
-        :root {
-            --admin-nav-bg: #ffffff;
-            --admin-page-bg: #f0f4f8;
-            --admin-hr-color: #e2e8f0;
-            --admin-tab-bg-active: #212529;
-            --admin-tab-text-inactive: #6c757d;
-            --admin-tab-bg-inactive: #f8f9fa;
-        }
-        .dark, .dark-mode {
-            --admin-nav-bg: #0f172a;
-            --admin-page-bg: #0f172a;
-            --admin-hr-color: #334155;
-            --admin-tab-bg-active: #0ea5a4;
-            --admin-tab-text-inactive: #cbd5e1;
-            --admin-tab-bg-inactive: #334155;
-        }
-
-        .admin-page-bg {
-            background-color: var(--admin-page-bg) !important;
-            transition: background-color 0.3s ease;
+        .active-tab {
+          background: linear-gradient(135deg, #0ea5a4, #0d9488) !important;
+          color: white !important;
+          box-shadow: 0 4px 15px rgba(14, 165, 164, 0.3) !important;
         }
         
-        /* Top Navigation Bar */
-        .admin-nav-bar {
-            background-color: var(--admin-nav-bg) !important;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Sidebar HR divider */
-        .theme-hr {
-            border-top: 1px solid var(--admin-hr-color) !important;
-        }
-
-        /* Sidebar Buttons (Billing & Settings) */
-        .sidebar-btn {
-            background-color: var(--admin-tab-bg-inactive);
-            color: var(--admin-tab-text-inactive) !important;
-            border: 1px solid var(--admin-hr-color);
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-        }
-        .sidebar-btn:hover {
-            background-color: #0ea5a4 !important;
-            color: white !important;
-        }
-
-        /* Input Fields (Create Contest) */
-        .admin-input {
-            background-color: var(--admin-tab-bg-inactive) !important;
-            border-color: var(--admin-hr-color) !important;
-            color: var(--admin-tab-text-inactive) !important;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        .inactive-tab {
+          background: ${isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)'} !important;
+          color: ${isDarkMode ? '#94a3b8' : '#64748b'} !important;
+          border: ${isDarkMode ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)'} !important;
         }
         
-        /* Tab Buttons (Exam Schedule/Records) */
-        .tab-button {
-            border: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease, color 0.3s ease;
+        .inactive-tab:hover {
+          background: ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'} !important;
+          color: ${isDarkMode ? '#f8fafc' : '#0f172a'} !important;
+          transform: translateY(-2px) !important;
         }
-
-        .tab-button.active {
-            background-color: var(--admin-tab-bg-active) !important;
-            color: white !important;
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
         }
-
-        .tab-button.inactive {
-            background-color: var(--admin-tab-bg-inactive) !important;
-            color: var(--admin-tab-text-inactive) !important;
-        }
-        .tab-button.inactive:hover {
-             background-color: var(--admin-hr-color) !important;
+        
+        @keyframes float-particle-1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -40px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
         }
       `}</style>
-
     </div>
   );
 }

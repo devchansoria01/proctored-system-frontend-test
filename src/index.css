@@ -1,8 +1,103 @@
-/* =======================================================
-   1. VARIABLE DEFINITIONS (LIGHT AND DARK MODE)
-   ======================================================= */
 
-/* --- ORIGINAL LIGHT MODE VARIABLES --- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.3s ease;
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+body:not(.dark-mode) {
+  background: 
+    
+    radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.25) 0, transparent 50%),
+    radial-gradient(circle at 90% 30%, rgba(59, 130, 246, 0.2) 0, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(34, 211, 238, 0.15) 0, transparent 50%),
+    
+    
+    linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+
+body.dark-mode {
+  background: 
+    
+    radial-gradient(circle at 0% 0%, rgba(30, 64, 175, 0.4) 0, transparent 50%),
+    radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.3) 0, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.35) 0, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(34, 211, 238, 0.25) 0, transparent 50%),
+    
+    
+    linear-gradient(135deg, #0c4a6e 0%, #0f172a 50%, #1e293b 100%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+
+@keyframes float-glow {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1); 
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translate(0, -20px) scale(1.1); 
+    opacity: 0.5;
+  }
+}
+
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  background: 
+    
+    radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.25) 0, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.2) 0, transparent 40%),
+    radial-gradient(circle at 40% 60%, rgba(14, 165, 233, 0.15) 0, transparent 40%);
+  animation: float-glow 15s ease-in-out infinite alternate;
+  mix-blend-mode: screen;
+}
+
+
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180, 23, 23, 0.05) 25%,
+    rgba(204, 207, 208, 0.705) 50%,
+    rgba(255, 255, 255, 0.05) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shine 8s ease-in-out infinite;
+  opacity: 0.3;
+}
+
+
 :root {
   --bg: #f8fafc;
   --card: #ffffff;
@@ -12,58 +107,122 @@
   --nav-link: #334155;
   --nav-hover: #0ea5a4;
   
-  /* Admin Dashboard Variables (Light Mode) */
+  
   --admin-nav-bg: #ffffff;
   --admin-page-bg: #f0f4f8;
   --admin-hr-color: #e2e8f0;
   --admin-tab-bg-active: #212529;
   --admin-tab-text-inactive: #6c757d;
   --admin-tab-bg-inactive: #f8f9fa;
+
+  
+  --card-bg: #ffffff;
 }
 
-/* --- DARK MODE VARIABLE OVERRIDES --- */
-.dark, .dark-mode {
-  --bg: #0f172a; /* Very dark background */
-  --card: #1e293b; /* Dark card background */
-  --text: #f1f5f9; /* Light text */
-  --nav-link: #cbd5e1;
-  --admin-hr-color: #334155; /* Used for input borders */
 
-  /* Admin Dashboard Variables (Dark Mode) */
+.dark, .dark-mode {
+  --bg: #0f172a;           
+  --card: #1e293b;         
+  --text: #f1f5f9;         
+  --nav-link: #cbd5e1;
+  --admin-hr-color: #334155; 
+
+  
   --admin-nav-bg: #0f172a;
   --admin-page-bg: #0f172a;
   --admin-hr-color: #334155;
   --admin-tab-bg-active: #0ea5a4;
   --admin-tab-text-inactive: #cbd5e1;
   --admin-tab-bg-inactive: #334155;
+
+  
+  --card-bg: #1e293b;
 }
 
-/* =======================================================
-   2. BASE STYLES
-   ======================================================= */
+
 
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  /* Use variable for solid background color */
-  background: var(--bg); 
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12) 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.10) 0, transparent 55%),
+    var(--bg);
   background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
-  transition: background 0.3s ease; /* Smooth transition */
+  transition: background 0.3s ease;
 }
 
 section { margin-bottom: 80px; }
 
-/* NAVBAR */
-.navbar {
-  background: var(--card);
-  box-shadow: 0 10px 30px rgba(0,0,0,.15);
-  transition: .4s;
+
+.navbar.glass-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  background: linear-gradient(
+    135deg,
+    rgba(30, 64, 175, 0.35),
+    rgba(56, 189, 248, 0.25)
+  );
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.55);
+
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+  transition: background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
   padding: 15px 0;
   display: flex;
   justify-content: center;
 }
+
+/* Dark vs light tint */
+.navbar.glass-nav.nav-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.35),
+    rgba(37, 99, 235, 0.28)
+  );
+}
+
+.navbar.glass-nav.nav-light {
+  background: rgba(248, 250, 252, 0.6);
+}
+
+
+body.dark-mode .navbar.glass-nav {
+  background-color: transparent !important;
+}
+
+
+
+
+.navbar::after {
+  content: "";
+  position: absolute;
+  bottom: -40px; 
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+
+body.light-mode .navbar {
+  background: linear-gradient(
+    120deg,
+    rgba(248, 250, 252, 0.9),
+    rgba(219, 234, 254, 0.9)
+  );
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
+}
+
+
 .navbar-brand {
   font-weight: 800;
   color: var(--accent) !important;
@@ -71,15 +230,24 @@ section { margin-bottom: 80px; }
   margin-right: auto;
 }
 .nav-link {
-  color: var(--nav-link) !important;
-  font-weight: 600;
-  transition: .3s;
-  text-decoration: none;
-  margin-left: 20px;
+  position: relative !important;
+  transition: color 0.3s ease !important;
 }
-.nav-link:hover {
-  color: var(--nav-hover) !important;
-  transform: translateY(-2px);
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 80%;
 }
 .theme-btn {
   border: none;
@@ -91,6 +259,54 @@ section { margin-bottom: 80px; }
   cursor: pointer;
 }
 
+
+
+/* Waving Hand Container - Stack images on top of each other */
+.hand-container {
+  position: relative;
+  width: 32px;       /* Slightly smaller container to fit tighter */
+  height: 32px;
+  margin-right: 6px; /* Tightened spacing to "Welcome" */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+/* 1. The Static Emoji (Bright & Normal Size) */
+.static-hand {
+  position: absolute;
+  font-size: 1.2rem; /* Normal readable size */
+  line-height: 1;
+  z-index: 1;
+  /* Removed opacity/grayscale so it isn't "dull" */
+  opacity: 1; 
+}
+
+/* 2. The Animated Hand (Bigger but not Scary) */
+.wave-gif {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  object-fit: contain;
+  
+  /* ⭐ SCALED DOWN to 1.4 (Perfectly covers static hand without being huge) */
+  transform: scale(1.4) translateY(-2px); 
+  
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Visibility Control */
+.fade-in { 
+  opacity: 1; 
+}
+
+.fade-out { 
+  opacity: 0; 
+}
 /* HERO & TEXT */
 h2 {
   text-align: center;
@@ -116,10 +332,10 @@ h2::after {
   font-weight: 800;
 }
 .why-aps-card {
-  background: var(--card); /* Changed to use variable */
+  background: var(--card);
   padding: 25px;
   border-radius: 18px;
-  border-bottom: 6px solid #0ea5a4; 
+  border-bottom: 6px solid #0ea5a4;
   box-shadow: 0 15px 35px rgba(14, 165, 164, 0.12);
   flex: 1;
   transition: transform 0.3s ease;
@@ -395,7 +611,7 @@ footer {
 
 /* INSIGHTS */
 .insights-card {
-  background: var(--card); /* Changed to use variable */
+  background: var(--card);
   border-radius: 20px;
   padding: 40px 30px;
   text-align: center;
@@ -417,12 +633,12 @@ footer {
 }
 .insight-title {
   font-weight: 700;
-  color: var(--text); /* Changed to use variable */
+  color: var(--text);
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
 .insight-text {
-  color: var(--text); /* Changed to use variable */
+  color: var(--text);
   font-size: 0.95rem;
   line-height: 1.6;
 }
@@ -433,48 +649,47 @@ footer {
 }
 .stat-item h4 {
   font-weight: 800;
-  color: var(--text); /* Changed to use variable */
+  color: var(--text);
   margin: 0;
   font-size: 1.4rem;
 }
 .stat-item span {
   font-size: 0.8rem;
-  color: var(--text); /* Changed to use variable */
+  color: var(--text);
 }
 
-/* =======================================================
-   3. GLOBAL DARK MODE FIXES (THE NUCLEAR FIX)
-   ======================================================= */
 
-/* 1. FORCE Backgrounds */
-body.dark-mode,
+
+body.dark-mode {
+  color: var(--text) !important;
+}
+
 body.dark-mode #root,
 body.dark-mode main,
 body.dark-mode section,
 body.dark-mode footer,
 body.dark-mode .signup-wrapper,
 body.dark-mode .container-box {
-    background-color: var(--bg) !important;
-    color: var(--text) !important;
+  background-color: transparent !important;
+  color: inherit !important;
 }
 
-/* 2. FORCE Dark Cards (Uses global --card variable) */
+/* Dark cards */
 body.dark-mode .card,
 body.dark-mode .shadow-sm,
 body.dark-mode .shadow-lg,
-body.dark-mode .why-aps-card,    
-body.dark-mode .insights-card,  
+body.dark-mode .why-aps-card,
+body.dark-mode .insights-card,
 body.dark-mode .contributor-card,
-body.dark-mode .leader-card,    
-body.dark-mode .signup-card,    
-body.dark-mode .card-box {      
-    background-color: var(--card) !important;
-    color: var(--text) !important;
-    border-color: #334155 !important;
+body.dark-mode .leader-card,
+body.dark-mode .signup-card,
+body.dark-mode .card-box {
+  background-color: var(--card) !important;
+  color: var(--text) !important;
+  border-color: #334155 !important;
 }
 
-/* 3. ☢️ THE TEXT OVERRIDE (This fixes the black text) ☢️ */
-/* We target every possible text element directly */
+/* Text override */
 body.dark-mode p,
 body.dark-mode span,
 body.dark-mode div,
@@ -482,151 +697,126 @@ body.dark-mode li,
 body.dark-mode strong,
 body.dark-mode b,
 body.dark-mode label,
-body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
-body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
-    color: var(--text) !important; 
+body.dark-mode h1, body.dark-mode h2, body-dark-mode h3,
+body.dark-mode h4, body-dark-mode h5, body-dark-mode h6 {
+  color: var(--text) !important;
 }
 
-/* 4. OVERRIDE BOOTSTRAP GREY TEXT */
+/* Bootstrap greys */
 body.dark-mode .text-muted,
 body.dark-mode .text-secondary,
 body.dark-mode .text-dark,
 body.dark-mode .text-black-50 {
-    color: #cbd5e1 !important; /* Force Light Grey */
+  color: #cbd5e1 !important;
 }
 
-/* 5. Inputs */
+/* Inputs */
 body.dark-mode input,
 body.dark-mode textarea,
 body.dark-mode select,
 body.dark-mode .form-control {
-    background-color: #334155 !important;
-    color: #ffffff !important;
-    border: 1px solid #475569 !important;
+  background-color: #334155 !important;
+  color: #ffffff !important;
+  border: 1px solid #475569 !important;
 }
 body.dark-mode input::placeholder {
-    color: #94a3b8 !important;
+  color: #94a3b8 !important;
 }
 body.dark-mode .input-group-custom input:focus,
 body.dark-mode .input-group-custom input:not(:placeholder-shown) {
-    /* Use the global accent for glow in dark mode */
-    border-color: var(--accent);
-    box-shadow: 0 0 18px rgba(14, 165, 164, 0.55);
+  border-color: var(--accent);
+  box-shadow: 0 0 18px rgba(14, 165, 164, 0.55);
 }
 body.dark-mode .input-group-custom input:focus + label,
 body.dark-mode .input-group-custom input:not(:placeholder-shown) + label {
-    background: var(--card); /* Fixes the label background when active */
+  background: var(--card);
 }
 
-/* 6. Navbar & Links */
-body.dark-mode .navbar {
-    background-color: var(--card) !important;
-    border-bottom: 1px solid var(--admin-hr-color) !important;
-}
+
 body.dark-mode .nav-link { color: var(--nav-link) !important; }
 body.dark-mode .nav-link:hover { color: var(--nav-hover) !important; }
 body.dark-mode a:not(.btn):not(.nav-link) { color: #38bdf8 !important; }
 
-/* =======================================================
-   4. THEME CARD OVERRIDES (Used in Hero, Contributor, Admin Stats)
-   ======================================================= */
 
-/* Force all cards with 'theme-card' to behave */
+
 .theme-card {
-    background-color: var(--card); /* Base color */
-    transition: background-color 0.3s ease, color 0.3s ease;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
+.theme-card h3,
+.theme-card h5 { color: #1e293b; }
+.theme-card p { color: #64748b; }
 
-/* The text inside the cards (ensuring light mode contrast) */
-.theme-card h3, 
-.theme-card h5 { color: #1e293b; } 
-.theme-card p { color: #64748b; } 
-
-/* DARK MODE OVERRIDES for theme-card content */
 .dark .theme-card, .dark-mode .theme-card {
-    background-color: #1e293b !important; 
-    border: 1px solid #334155 !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
 }
 .dark .theme-card h3, .dark-mode .theme-card h3,
 .dark .theme-card h5, .dark-mode .theme-card h5 {
-    color: #f1f5f9 !important;
+  color: #f1f5f9 !important;
 }
 .dark .theme-card p, .dark-mode .theme-card p {
-    color: #cbd5e1 !important;
+  color: #cbd5e1 !important;
 }
 
-/* =======================================================
-   5. FEATURE SPECIFIC FIXES (Tags, Tables, Buttons)
-   ======================================================= */
 
-/* --- TAG AND SCORE BOX COLORS (Used in HeroSection/How APS Works) --- */
 
-/* Default (Light Mode) Tag Colors */
-.tag-teal { background: #e0f2f1; color: #00695c; }
-.tag-blue { background: #e3f2fd; color: #1565c0; }
+
+.tag-teal   { background: #e0f2f1; color: #00695c; }
+.tag-blue   { background: #e3f2fd; color: #1565c0; }
 .tag-purple { background: #f3e5f5; color: #7b1fa2; }
 
-/* Default (Light Mode) Score Box Colors */
 .score-box-default { background: #f8fafc; border: 1px solid #e2e8f0; transition: background-color 0.3s ease, border-color 0.3s ease; }
 .score-box-success { background: #f0fdf4; border: 1px solid #bbf7d0; transition: background-color 0.3s ease, border-color 0.3s ease; }
 
-/* Dark Mode Overrides (Tags) */
-.dark .tag-teal, .dark-mode .tag-teal { background: #064e3b !important; color: #a7f3d0 !important; }
-.dark .tag-blue, .dark-mode .tag-blue { background: #1e3a8a !important; color: #bfdbfe !important; }
+.dark .tag-teal, .dark-mode .tag-teal     { background: #064e3b !important; color: #a7f3d0 !important; }
+.dark .tag-blue, .dark-mode .tag-blue     { background: #1e3a8a !important; color: #bfdbfe !important; }
 .dark .tag-purple, .dark-mode .tag-purple { background: #4a044e !important; color: #f0abfc !important; }
 
-/* Dark Mode Overrides (Score Boxes) */
 .dark .score-box-default, .dark-mode .score-box-default { background: #0f172a !important; border-color: #334155 !important; }
 .dark .score-box-success, .dark-mode .score-box-success { background: #064e3b !important; border-color: #34d399 !important; }
 
-
-/* --- ADMIN PORTAL TABLE FIXES (Records.jsx) --- */
-
-/* 1. Force Bootstrap Tables to be Dark */
+/* Admin tables */
 .dark .table, .dark-mode .table {
-    --bs-table-bg: #1e293b !important; 
-    --bs-table-striped-bg: #1e293b !important;
-    --bs-table-hover-bg: #334155 !important;
-    color: var(--text) !important;
-    border-color: #334155 !important;
-    background-color: #1e293b !important;
+  --bs-table-bg: #1e293b !important;
+  --bs-table-striped-bg: #1e293b !important;
+  --bs-table-hover-bg: #334155 !important;
+  color: var(--text) !important;
+  border-color: #334155 !important;
+  background-color: #1e293b !important;
 }
-
-/* 2. Fix the Table Header Background/Text (The "White Ribbon") */
 .table-themed-head { background-color: #f8f9fa !important; }
-.dark .table-themed-head, .dark-mode .table-themed-head, .dark .table thead, .dark-mode .table thead {
-    background-color: #0f172a !important; 
-    color: #cbd5e1 !important; 
-    border-color: #334155 !important;
+.dark .table-themed-head, .dark-mode .table-themed-head,
+.dark .table thead, .dark-mode .table thead {
+  background-color: #0f172a !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
 }
 .dark .table-themed-head th, .dark-mode .table-themed-head th {
-    color: #94a3b8 !important; 
-    background-color: #0f172a !important;
+  color: #94a3b8 !important;
+  background-color: #0f172a !important;
 }
-
-/* 3. Table Row and Hover */
 .dark .table-themed-row, .dark-mode .table-themed-row { border-color: #334155; }
 .dark .table-themed-row:hover, .dark-mode .table-themed-row:hover { background-color: #1e293b !important; }
 
-
-/* 4. Fix Top Performer Badge Text */
-.dark .badge.bg-warning, .dark-mode .badge.bg-warning, .dark .text-dark, .dark-mode .text-dark {
-    color: #000000 !important;
+.dark .badge.bg-warning, .dark-mode .badge.bg-warning,
+.dark .text-dark, .dark-mode .text-dark {
+  color: #000000 !important;
 }
-
-/* 5. Fix View Report Button */
 .table-themed-button { color: #475569; border-color: #cbd5e1; }
 .dark .table-themed-button, .dark-mode .table-themed-button {
-    color: var(--text) !important;
-    border-color: #64748b !important;
-    background-color: transparent !important;
+  color: var(--text) !important;
+  border-color: #64748b !important;
+  background-color: transparent !important;
 }
 
-
-/* --- SCHEDULE SECTION FIXES --- */
-
-/* 1. Date Box Styling (Default/Light Mode) */
+/* Schedule */
 .schedule-date-box { display: flex; flex-direction: column; justify-content: center; align-items: center; transition: background-color 0.3s ease, color 0.3s ease; }
 .schedule-date-month { font-size: 14px; font-weight: bold; }
 .schedule-date-day { font-size: 28px; font-weight: bold; line-height: 1; }
@@ -634,21 +824,47 @@ body.dark-mode a:not(.btn):not(.nav-link) { color: #38bdf8 !important; }
 .schedule-date-box[data-status="Open"], .schedule-date-box[data-status="Upcoming"] { background-color: #e0f2fe; color: #0ea5a4; }
 .schedule-date-box[data-status="Locked"] { background-color: #f3f4f6; color: #64748b; }
 
-/* 2. DARK MODE OVERRIDES (Date Boxes) */
 .dark .schedule-date-box[data-status="Open"], .dark-mode .schedule-date-box[data-status="Open"],
 .dark .schedule-date-box[data-status="Upcoming"], .dark-mode .schedule-date-box[data-status="Upcoming"] {
-    background-color: #0f172a !important; 
-    color: #0ea5a4 !important; 
+  background-color: #0f172a !important;
+  color: #0ea5a4 !important;
 }
 .dark .schedule-date-box[data-status="Locked"], .dark-mode .schedule-date-box[data-status="Locked"] {
-    background-color: #334155 !important; 
-    color: #cbd5e1 !important; 
+  background-color: #334155 !important;
+  color: #cbd5e1 !important;
 }
-.dark .schedule-date-box[data-status="Locked"] span, .dark-mode .schedule-date-box[data-status="Locked"] span { color: inherit !important; }
+.dark .schedule-date-box[data-status="Locked"] span,
+.dark-mode .schedule-date-box[data-status="Locked"] span { color: inherit !important; }
 
-/* 3. Button Fixes */
 .schedule-button-secondary { color: #64748b !important; border-color: #cbd5e1 !important; }
 .dark .schedule-button-secondary, .dark-mode .schedule-button-secondary {
-    color: var(--nav-link) !important;
-    border-color: #64748b !important;
+  color: var(--nav-link) !important;
+  border-color: #64748b !important;
 }
+
+
+.dark-mode .theme-text-strong { color: #f9fafb; }
+.light-mode .theme-text-strong { color: #111827; }
+
+/
+.hero-section {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-video-card {
+  padding: 6px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #0ea5a4, #22d3ee);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.8);
+}
+
+.hero-video-card video {
+  display: block;
+}
+
+
+.dark-mode .theme-text-primary   { color: #f9fafb; }
+.dark-mode .theme-text-secondary { color: #9ca3af; }
+.light-mode .theme-text-primary  { color: #0f172a; }
+.light-mode .theme-text-secondary{ color: #475569; }

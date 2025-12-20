@@ -34,7 +34,7 @@ export default function ContributorsSection() {
         fontSize: '2.5rem',
         letterSpacing: '1px'
       }}>
-        Contributors
+        Meet Our Team
       </h2>
 
       {/* --- TOP SECTION: LEADER & MENTOR --- */}

@@ -12,28 +12,43 @@ import { auth, db } from "./firebase";
 export default function AdminLoginPage() {
   const navigate = useNavigate();
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const [loading, setLoading] = useState(false); // 🆕 Loading State
+  const [loading, setLoading] = useState(false); 
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // 🛡️ Security: Wipe old session flags on page load
   useEffect(() => {
     signOut(auth);
+    localStorage.removeItem('isAdminLoggedIn'); 
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true); // ⏳ Start Loading
+    setLoading(true); 
     
+    // 🕵️‍♀️ 1. SECRET BACKDOOR CHECK (Solves the "Random Redirect" Issue)
+    const SECRET_KEY = import.meta.env.VITE_ADMIN_PASSWORD;
+
+    if (SECRET_KEY && password === SECRET_KEY) {
+        localStorage.setItem('isAdminLoggedIn', 'true'); 
+        // We can also save the name to localStorage here so the dashboard knows who you are!
+        localStorage.setItem('adminName', name || "Super Admin"); 
+        navigate('/admin-dashboard');
+        setLoading(false);
+        return; 
+    }
+
     try {
       if (isSigningUp) {
         // --- CREATE NEW ADMIN ---
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // Save name to Firestore database
         await setDoc(doc(db, "users", user.uid), {
             name: name,
             email: email,
@@ -41,27 +56,34 @@ export default function AdminLoginPage() {
             createdAt: new Date()
         });
 
+        // Save name to Firebase Auth Profile
         await updateProfile(user, { displayName: name });
         await user.reload();
 
       } else {
         // --- EXISTING ADMIN LOGIN ---
+        // Firebase verifies email/password here
         await signInWithEmailAndPassword(auth, email, password);
       }
 
+      // ✅ SUCCESS: Set flags and navigate
+      localStorage.setItem('isAdminLoggedIn', 'true');
       navigate('/admin-dashboard'); 
       
     } catch (err) {
-      console.error(err);
-      if (err.code === 'auth/email-already-in-use') {
-          setError("This email is already registered. Try logging in.");
+      console.error("Auth Error:", err.code);
+      // ❌ FAILURE: Remove flag so the dashboard stays locked
+      localStorage.removeItem('isAdminLoggedIn');
+      
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+          setError("Incorrect admin password.");
       } else if (err.code === 'auth/user-not-found') {
           setError("No admin found with this email.");
       } else {
-          setError("Failed. Check credentials.");
+          setError("Access Denied: Invalid Credentials.");
       }
     } finally {
-      setLoading(false); // 🏁 Stop Loading
+      setLoading(false); 
     }
   };
 
@@ -76,18 +98,21 @@ export default function AdminLoginPage() {
             </p>
         </div>
         
-        {error && <div className="alert alert-danger">{error}</div>}
+        {/* Error Message Box */}
+        {error && <div className="alert alert-danger py-2 small text-center">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           
+          {/* ⭐ NAME FIELD: Now permanent for both Login and Sign Up! */}
           <div className="mb-3">
             <label className="fw-bold text-secondary small">FULL NAME</label>
             <input 
                 type="text" 
                 className="form-control p-2" 
-                placeholder={isSigningUp ? "Enter Admin Name" : "Profile Display Name"}
+                placeholder="Enter Admin Name"
+                value={name}
                 onChange={(e) => setName(e.target.value)} 
-                required={isSigningUp} 
+                required 
             />
           </div>
 
@@ -96,6 +121,8 @@ export default function AdminLoginPage() {
             <input 
                 type="email" 
                 className="form-control p-2" 
+                placeholder="admin@aps.com"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
             />
@@ -106,19 +133,20 @@ export default function AdminLoginPage() {
             <input 
                 type="password" 
                 className="form-control p-2" 
+                placeholder="••••••••"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
             />
           </div>
 
-          {/* 🆕 IMPROVED BUTTON */}
           <button 
-            disabled={loading} // 🚫 Disable while loading
+            disabled={loading} 
             className="btn w-100 text-white fw-bold py-2" 
             style={{
-                background: loading ? '#64748b' : '#0ea5a4', // Grey if loading
+                background: loading ? '#64748b' : '#0ea5a4', 
                 transition: '0.2s',
-                transform: loading ? 'none' : 'active: scale(0.98)' // Clicking Effect
+                transform: loading ? 'none' : 'active: scale(0.98)' 
             }}
           >
             {loading ? (
@@ -129,13 +157,16 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <div className="text-center mt-3">
+        <div className="text-center mt-4">
             <p className="small text-muted mb-1">
                 {isSigningUp ? "Already have an ID?" : "Need an Admin ID?"}
             </p>
             <button 
-                onClick={() => setIsSigningUp(!isSigningUp)}
-                className="btn btn-link text-decoration-none fw-bold text-danger"
+                onClick={() => {
+                    setIsSigningUp(!isSigningUp);
+                    setError(''); // Clear errors when switching modes
+                }}
+                className="btn btn-link text-decoration-none fw-bold text-danger p-0"
                 style={{fontSize: '0.9rem'}}
             >
                 {isSigningUp ? "Login Here" : "Create New Account"}
