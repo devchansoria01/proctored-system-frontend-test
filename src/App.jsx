@@ -52,7 +52,9 @@ function App() {
 
       if (!savedTheme) {
         localStorage.setItem('theme', 'dark');
+      }
     }
+      
   }, []);  
 
   return (
