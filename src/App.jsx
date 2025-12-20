@@ -41,16 +41,19 @@ function LandingPage() {
 
 function App() {
   
-  useEffect(() => {
+   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
 
     if (savedTheme === 'light') {
       document.body.classList.remove('dark-mode');
     } else {
-      // default + "dark" value both lead here
+      
       document.body.classList.add('dark-mode');
+
+      if (!savedTheme) {
+        localStorage.setItem('theme', 'dark');
     }
-  }, []); 
+  }, []);  
 
   return (
     <div className="min-h-screen font-sans">
