@@ -869,4 +869,93 @@ body.dark-mode a:not(.btn):not(.nav-link) { color: #38bdf8 !important; }
 .light-mode .theme-text-primary  { color: #0f172a; }
 .light-mode .theme-text-secondary{ color: #475569; }
 
+/* --- THE TEAL-FORCE OVERRIDE --- */
 
+/* 1. Reset theme-card to be light by default */
+.theme-card {
+  background: #ffffff !important;
+  color: #1e293b !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(14, 165, 164, 0.1) !important;
+}
+
+/* 2. Force dark mode background back */
+.dark-mode .theme-card {
+  background: rgba(30, 41, 59, 0.9) !important;
+  color: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 3. Teal-themed utility classes */
+.teal-icon-box {
+  background-color: #f0fdfa; /* Ultra light teal */
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.teal-text { color: #0ea5a4 !important; font-size: 24px; }
+
+.bg-teal-soft {
+  background-color: #f0fdfa !important;
+  color: #0d9488 !important; /* Darker teal for text */
+  border: 1px solid #99f6e4 !important;
+  border-radius: 20px;
+}
+
+.status-indicator-completed {
+  color: #0d9488 !important;
+  font-weight: bold;
+}
+
+/* 4. Table Visibility */
+.teal-portal-table {
+  background-color: transparent !important;
+}
+
+.table-themed-head {
+  background-color: #f8fafc !important;
+  border-bottom: 2px solid #0ea5a4 !important;
+}
+
+.table-themed-head th {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+.btn-teal-outline {
+  border: 1px solid #0ea5a4 !important;
+  color: #0ea5a4 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+}
+
+.btn-teal-outline:hover {
+  background: #0ea5a4 !important;
+  color: #fff !important;
+}
+
+
+/* --- WINNER BADGE THEME SYNC --- */
+
+/* Light Mode: Crisp and clean (Default) */
+.bg-teal-soft {
+  background-color: #f0fdfa !important;
+  color: #0d9488 !important;
+  border: 1px solid #99f6e4 !important;
+  transition: all 0.3s ease;
+}
+
+/* Dark Mode: Glowing and transparent */
+.dark-mode .bg-teal-soft {
+  background-color: rgba(13, 148, 136, 0.15) !important; /* Low opacity teal */
+  color: #5eead4 !important; /* Bright, neon teal for visibility */
+  border: 1px solid rgba(94, 234, 212, 0.3) !important;
+  box-shadow: 0 0 15px rgba(13, 148, 136, 0.2); /* Subtle glow */
+}
+
+/* Ensure the Crown (👑) stays visible */
+.bg-teal-soft span {
+  filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.3));
+}
