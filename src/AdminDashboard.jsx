@@ -5,7 +5,6 @@ import { signOut, onAuthStateChanged } from 'firebase/auth';
 
 import AdminRecords from './AdminRecords';
 import AdminSchedule from './AdminSchedule';
-import LiveMonitoringTable from './LiveMonitoringTable'; 
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ export default function AdminDashboard() {
         navigate('/admin-login'); 
       }
     });
-    
     
     const checkTheme = () => {
       setIsDarkMode(document.body.classList.contains('dark-mode'));
@@ -44,10 +42,25 @@ export default function AdminDashboard() {
     }
   };
 
+  const toggleTheme = () => {
+    const body = document.body;
+    const isDark = body.classList.contains('dark-mode');
+    
+    if (isDark) {
+      body.classList.remove('dark-mode');
+      body.classList.add('light-mode');
+      setIsDarkMode(false);
+    } else {
+      body.classList.remove('light-mode');
+      body.classList.add('dark-mode');
+      setIsDarkMode(true);
+    }
+  };
+
   return (
     <div className="admin-page-bg" style={{ minHeight: '100vh', paddingBottom: '2rem', position: 'relative' }}>
       
-      {/* bg */}
+      {/* Background Effects */}
       <div className="position-fixed top-0 start-0 w-100 h-100" style={{ zIndex: -1, pointerEvents: 'none' }}>
         <div style={{
           position: 'absolute',
@@ -64,14 +77,13 @@ export default function AdminDashboard() {
         }}></div>
       </div>
       
-      {/* nav bar */}
+      {/* Navbar */}
       <nav className="navbar fixed-top admin-nav-bar" style={{ 
         zIndex: 1000,
         background: isDarkMode ? 
           'rgba(15, 23, 42, 0.9)' : 
           'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
         borderBottom: isDarkMode ? 
           '1px solid rgba(14, 165, 164, 0.2)' : 
           '1px solid rgba(14, 165, 164, 0.1)',
@@ -97,21 +109,18 @@ export default function AdminDashboard() {
                     <span style={{ 
                       fontSize: '1.2rem',
                       color: isDarkMode ? '#5eead4' : '#0ea5a4',
-                      filter: 'drop-shadow(0 0 8px rgba(14, 165, 164, 0.3))'
                     }}>🛡️</span>
                 </div>
                 <div>
                   <span className="fw-bold" style={{ 
                     fontSize: '1.1rem',
                     color: isDarkMode ? '#f1f5f9' : '#0f172a',
-                    letterSpacing: '0.5px'
                   }}>
                     ADMIN PORTAL
                   </span>
                   <div style={{ 
                     fontSize: '0.75rem',
                     color: isDarkMode ? '#94a3b8' : '#64748b',
-                    letterSpacing: '0.3px'
                   }}>
                     Powered by APS-System
                   </div>
@@ -119,7 +128,35 @@ export default function AdminDashboard() {
             </div>
             <div className="d-flex align-items-center gap-3">
                 
-                {/* Live Monitor Btn  */}
+                {/* Theme Toggle Button */}
+                <button 
+                  onClick={toggleTheme}
+                  className="btn d-flex align-items-center justify-content-center px-3 py-2 rounded-pill"
+                  style={{
+                    background: isDarkMode ? 
+                      'rgba(255, 255, 255, 0.1)' : 
+                      'rgba(0, 0, 0, 0.05)',
+                    border: isDarkMode ? 
+                      '1px solid rgba(255, 255, 255, 0.2)' : 
+                      '1px solid rgba(0, 0, 0, 0.1)',
+                    color: isDarkMode ? '#f1f5f9' : '#0f172a',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = isDarkMode ? 
+                      'rgba(255, 255, 255, 0.15)' : 
+                      'rgba(0, 0, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = isDarkMode ? 
+                      'rgba(255, 255, 255, 0.1)' : 
+                      'rgba(0, 0, 0, 0.05)';
+                  }}
+                >
+                  {isDarkMode ? '☀️' : '🌙'}
+                </button>
+
+                {/* Live Monitor Button */}
                 <Link 
                   to="/live-monitor" 
                   className="btn d-flex align-items-center gap-2 px-4 py-2 rounded-pill fw-bold shadow-sm"
@@ -128,7 +165,7 @@ export default function AdminDashboard() {
                     color: 'white',
                     border: 'none',
                     fontSize: '0.9rem',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
@@ -139,11 +176,11 @@ export default function AdminDashboard() {
                     e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.2)';
                   }}
                 >
-                  <span style={{ fontSize: '0.9rem' }}>🔴</span>
+                  <span>🔴</span>
                   Live Monitor
                 </Link>
 
-                {/* home btn */}
+                {/* Home Button */}
                 <a 
                   href="/" 
                   className="text-decoration-none d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
@@ -172,11 +209,11 @@ export default function AdminDashboard() {
                     e.target.style.color = isDarkMode ? '#cbd5e1' : '#475569';
                   }}
                 >
-                  <i className="fa-solid fa-house" style={{ fontSize: '0.8rem' }}></i>
+                  <i className="fa-solid fa-house"></i>
                   Home
                 </a>
 
-                {/*  */}
+                {/* Logout Button */}
                 <button 
                   onClick={handleLogout} 
                   className="btn d-flex align-items-center gap-2 px-4 py-2 rounded-pill fw-bold"
@@ -206,14 +243,14 @@ export default function AdminDashboard() {
                     e.target.style.transform = 'translateY(0)';
                   }}
                 >
-                  <i className="fa-solid fa-arrow-right-from-bracket" style={{ fontSize: '0.8rem' }}></i>
+                  <i className="fa-solid fa-arrow-right-from-bracket"></i>
                   Logout
                 </button>
             </div>
         </div>
       </nav>
 
-      {/*  */}
+      {/* Hero Gradient */}
       <div style={{ 
           background: isDarkMode ? 
             'linear-gradient(135deg, rgba(14, 165, 164, 0.2) 0%, rgba(15, 23, 42, 0.9) 100%)' : 
@@ -229,11 +266,11 @@ export default function AdminDashboard() {
             '1px solid rgba(14, 165, 164, 0.05)'
       }}></div>
       
-      {/* MAIN CONTENT */}
+      {/* Main Content */}
       <div className="container-fluid px-4 px-lg-5" style={{ position: 'relative', zIndex: 1, paddingTop: '100px' }}>
         <div className="row g-4">
           
-          {/* SIDEBAR */}
+          {/* Sidebar */}
           <div className="col-md-3">
             <div className="card border-0 p-4 h-100" style={{ 
               borderRadius: '20px',
@@ -241,7 +278,6 @@ export default function AdminDashboard() {
                 'rgba(30, 41, 59, 0.7)' : 
                 'rgba(255, 255, 255, 0.8)',
               backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
               border: isDarkMode ? 
                 '1px solid rgba(255, 255, 255, 0.1)' : 
                 '1px solid rgba(255, 255, 255, 0.5)',
@@ -262,18 +298,14 @@ export default function AdminDashboard() {
                         '3px solid rgba(14, 165, 164, 0.3)' : 
                         '3px solid rgba(14, 165, 164, 0.2)',
                       fontWeight: '700',
-                      boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)'
                     }}
                 >
                     {adminName.charAt(0).toUpperCase()}
                 </div>
                 
-                {/*  */}
                 <div className="text-center">
                   <h3 className="fw-bold mb-0" style={{ 
                     color: isDarkMode ? '#f8fafc' : '#0f172a',
-                    fontSize: '1.3rem',
-                    textAlign: 'center'
                   }}>{adminName}</h3>
                   <div className="d-flex align-items-center justify-content-center gap-2 mt-2">
                     <span style={{
@@ -285,8 +317,6 @@ export default function AdminDashboard() {
                     }}></span>
                     <p className="small mb-0" style={{ 
                       color: isDarkMode ? '#94a3b8' : '#64748b',
-                      fontSize: '0.85rem',
-                      textAlign: 'center'
                     }}>Senior Administrator</p>
                   </div>
                 </div>
@@ -301,43 +331,37 @@ export default function AdminDashboard() {
               }} />
               <div className="text-start px-1">
                 <p className="text-uppercase small fw-bold mb-3" style={{
-                  letterSpacing: '1px',
                   color: isDarkMode ? '#94a3b8' : '#64748b'
                 }}>System Overview</p>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <span style={{ 
                       color: isDarkMode ? '#cbd5e1' : '#475569',
-                      fontSize: '0.9rem'
                     }}>Tests Organized</span>
                     <span className="fw-bold" style={{ 
                       color: isDarkMode ? '#f8fafc' : '#0f172a',
-                      fontSize: '1.1rem'
                     }}>12</span>
                 </div>
                 <div className="d-flex justify-content-between align-items-center">
                     <span style={{ 
                       color: isDarkMode ? '#cbd5e1' : '#475569',
-                      fontSize: '0.9rem'
                     }}>Active Labs</span>
                     <span className="fw-bold" style={{ 
                       color: isDarkMode ? '#f8fafc' : '#0f172a',
-                      fontSize: '1.1rem'
                     }}>4</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* WORKSPACE */}
+          {/* Workspace */}
           <div className="col-md-9">
-            {/*  Contest Card */}
+            {/* Contest Card */}
             <div className="card border-0 p-4 mb-4" style={{ 
               borderRadius: '20px',
               background: isDarkMode ? 
                 'rgba(30, 41, 59, 0.7)' : 
                 'rgba(255, 255, 255, 0.8)',
               backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
               border: isDarkMode ? 
                 '1px solid rgba(255, 255, 255, 0.1)' : 
                 '1px solid rgba(255, 255, 255, 0.5)',
@@ -359,16 +383,13 @@ export default function AdminDashboard() {
                       '1px solid rgba(14, 165, 164, 0.2)'
                   }}>
                     <span style={{ 
-                      fontSize: '1.2rem',
                       color: isDarkMode ? '#5eead4' : '#0ea5a4'
                     }}>🚀</span>
                   </div>
                   <h3 className="fw-bold mb-0" style={{ 
-                    color: isDarkMode ? '#f8fafc' : '#0f172a',
                     background: 'linear-gradient(90deg, #0ea5a4, #22d3ee)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
                   }}>Create New Contest</h3>
                 </div>
                 <div className="row justify-content-center">
@@ -390,19 +411,6 @@ export default function AdminDashboard() {
                                     border: isDarkMode ? 
                                       '1px solid rgba(255, 255, 255, 0.1)' : 
                                       '1px solid rgba(0, 0, 0, 0.05)',
-                                    transition: 'all 0.3s ease'
-                                  }}
-                                  onFocus={(e) => {
-                                    e.target.style.border = isDarkMode ? 
-                                      '1px solid rgba(14, 165, 164, 0.5)' : 
-                                      '1px solid rgba(14, 165, 164, 0.3)';
-                                    e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 164, 0.1)';
-                                  }}
-                                  onBlur={(e) => {
-                                    e.target.style.border = isDarkMode ? 
-                                      '1px solid rgba(255, 255, 255, 0.1)' : 
-                                      '1px solid rgba(0, 0, 0, 0.05)';
-                                    e.target.style.boxShadow = 'none';
                                   }}
                                 />
                             </div>
@@ -422,19 +430,6 @@ export default function AdminDashboard() {
                                     border: isDarkMode ? 
                                       '1px solid rgba(255, 255, 255, 0.1)' : 
                                       '1px solid rgba(0, 0, 0, 0.05)',
-                                    transition: 'all 0.3s ease'
-                                  }}
-                                  onFocus={(e) => {
-                                    e.target.style.border = isDarkMode ? 
-                                      '1px solid rgba(14, 165, 164, 0.5)' : 
-                                      '1px solid rgba(14, 165, 164, 0.3)';
-                                    e.target.style.boxShadow = '0 0 0 3px rgba(14, 165, 164, 0.1)';
-                                  }}
-                                  onBlur={(e) => {
-                                    e.target.style.border = isDarkMode ? 
-                                      '1px solid rgba(255, 255, 255, 0.1)' : 
-                                      '1px solid rgba(0, 0, 0, 0.05)';
-                                    e.target.style.boxShadow = 'none';
                                   }}
                                 />
                             </div>
@@ -444,8 +439,7 @@ export default function AdminDashboard() {
                               background: 'linear-gradient(135deg, #0ea5a4, #0d9488)',
                               color: 'white',
                               border: 'none',
-                              fontSize: '1rem',
-                              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                              transition: 'all 0.3s ease'
                             }}
                             onMouseEnter={(e) => {
                               e.target.style.transform = 'translateY(-2px)';
@@ -462,42 +456,38 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* TABS SECTION - Premium */}
+            {/* Tabs Section */}
             <div className="card border-0 p-4" style={{ 
               borderRadius: '20px',
               background: isDarkMode ? 
                 'rgba(30, 41, 59, 0.7)' : 
                 'rgba(255, 255, 255, 0.8)',
               backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
               border: isDarkMode ? 
                 '1px solid rgba(255, 255, 255, 0.1)' : 
                 '1px solid rgba(255, 255, 255, 0.5)',
               boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
               minHeight: '400px'
             }}>
-                {/* Tab Buttons - Premium */}
                 <div className="d-flex gap-3 mb-4">
                     <button 
                         className={`d-flex align-items-center gap-2 px-4 py-3 rounded-pill border-0 fw-bold ${activeTab === 'schedule' ? 'active-tab' : 'inactive-tab'}`} 
                         onClick={() => setActiveTab('schedule')}
                         style={{
-                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                          fontSize: '0.95rem'
+                          transition: 'all 0.3s ease',
                         }}
                     >
-                        <span style={{ fontSize: '1rem' }}>📅</span>
+                        <span>📅</span>
                         Assessment Schedule
                     </button>
                     <button 
                         className={`d-flex align-items-center gap-2 px-4 py-3 rounded-pill border-0 fw-bold ${activeTab === 'records' ? 'active-tab' : 'inactive-tab'}`} 
                         onClick={() => setActiveTab('records')}
                         style={{
-                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                          fontSize: '0.95rem'
+                          transition: 'all 0.3s ease',
                         }}
                     >
-                        <span style={{ fontSize: '1rem' }}>📂</span>
+                        <span>📂</span>
                         Records
                     </button>
                 </div>

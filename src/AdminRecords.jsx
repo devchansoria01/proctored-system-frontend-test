@@ -1,187 +1,77 @@
 import React from 'react';
 
 export default function AdminRecords() {
-  // --- ADMIN-SPECIFIC MOCK DATA ---
   const contests = [
-    {
-      id: 1,
-      date: "Oct 12, 2025",
-      name: "Q4 Coding Challenge",
-      platform: "Internal Platform",
-      winner: "Admin_Test_01",
-      duration: "180 Mins",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      date: "Sep 28, 2025",
-      name: "React.js Fundamentals",
-      platform: "HackerRank",
-      winner: "Admin_Test_02",
-      duration: "90 Mins",
-      status: "Completed",
-    },
-    {
-      id: 3,
-      date: "Aug 15, 2025",
-      name: "AWS Certification Prep",
-      platform: "Custom Lab",
-      winner: "Admin_Test_03",
-      duration: "150 Mins",
-      status: "Completed",
-    },
+    { id: 1, date: "Oct 12, 2025", name: "Q4 Coding Challenge", platform: "Internal Platform", winner: "Admin_Test_01", duration: "180 Mins", status: "Completed" },
+    { id: 2, date: "Sep 28, 2025", name: "React.js Fundamentals", platform: "HackerRank", winner: "Admin_Test_02", duration: "90 Mins", status: "Completed" },
+    { id: 3, date: "Aug 15, 2025", name: "AWS Certification Prep", platform: "Custom Lab", winner: "Admin_Test_03", duration: "150 Mins", status: "Completed" },
   ];
 
   return (
     <div className="container" style={{ marginTop: '30px', paddingBottom: '50px' }}>
       {/* 1. Header Section */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 className="theme-text-primary" style={{ fontWeight: 'bold' }}>
-            Contest Records
-          </h2>
-          <p className="text-muted theme-text-secondary">
-            History and performance analytics for your Organization
-          </p>
-        </div>
+      <div className="mb-4">
+          <h2 className="theme-text-primary fw-bold">Contest Records</h2>
+          <p className="theme-text-secondary opacity-75">History and performance analytics for your Organization</p>
       </div>
 
       {/* 2. Stats Cards */}
       <div className="row mb-5">
-        {/* STAT CARD 1: CONTESTS ORGANIZED */}
-        <div className="col-md-4">
-          <div className="card theme-card p-3 mb-3" style={{ borderRadius: '15px' }}>
-            <div className="d-flex align-items-center">
-              <div
-                style={{
-                  backgroundColor: '#e0f2fe',
-                  padding: '15px',
-                  borderRadius: '12px',
-                  marginRight: '15px',
-                }}
-              >
-                <i
-                  className="fa-solid fa-trophy"
-                  style={{ color: '#0ea5a4', fontSize: '24px' }}
-                ></i>
-              </div>
-              <div>
-                <h3 className="mb-0 fw-bold theme-text-primary">3</h3>
-                <small className="text-muted theme-text-secondary">
-                  Contests Organized
-                </small>
+        {[
+          { icon: 'fa-trophy', count: '3', label: 'Contests Organized' },
+          { icon: 'fa-users', count: '135', label: 'Total Participants' },
+          { icon: 'fa-bolt', count: '94%', label: 'Avg. Confidence' }
+        ].map((stat, i) => (
+          <div key={i} className="col-md-4 mb-3">
+            <div className="card theme-card p-3" style={{ borderRadius: '15px', border: 'none' }}>
+              <div className="d-flex align-items-center">
+                <div className="teal-icon-box me-3">
+                  <i className={`fa-solid ${stat.icon} teal-text`}></i>
+                </div>
+                <div>
+                  <h3 className="mb-0 fw-bold theme-text-primary">{stat.count}</h3>
+                  <small className="theme-text-secondary">{stat.label}</small>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* STAT CARD 2: TOTAL PARTICIPANTS */}
-        <div className="col-md-4">
-          <div className="card theme-card p-3 mb-3" style={{ borderRadius: '15px' }}>
-            <div className="d-flex align-items-center">
-              <div
-                style={{
-                  backgroundColor: '#e0f2fe',
-                  padding: '15px',
-                  borderRadius: '12px',
-                  marginRight: '15px',
-                }}
-              >
-                <i
-                  className="fa-solid fa-users"
-                  style={{ color: '#0ea5a4', fontSize: '24px' }}
-                ></i>
-              </div>
-              <div>
-                <h3 className="mb-0 fw-bold theme-text-primary">135</h3>
-                <small className="text-muted theme-text-secondary">
-                  Total Participants
-                </small>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* STAT CARD 3: AVG. CONFIDENCE */}
-        <div className="col-md-4">
-          <div className="card theme-card p-3 mb-3" style={{ borderRadius: '15px' }}>
-            <div className="d-flex align-items-center">
-              <div
-                style={{
-                  backgroundColor: '#e0f2fe',
-                  padding: '15px',
-                  borderRadius: '12px',
-                  marginRight: '15px',
-                }}
-              >
-                <i
-                  className="fa-solid fa-bolt"
-                  style={{ color: '#0ea5a4', fontSize: '24px' }}
-                ></i>
-              </div>
-              <div>
-                <h3 className="mb-0 fw-bold theme-text-primary">94%</h3>
-                <small className="text-muted theme-text-secondary">
-                  Avg. Confidence
-                </small>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* 3. Past Contests Table */}
-      <div className="card theme-card p-4" style={{ borderRadius: '20px' }}>
+      <div className="card theme-card p-4" style={{ borderRadius: '20px', border: 'none' }}>
         <h4 className="mb-4 fw-bold theme-text-primary">Past Contests</h4>
         <div className="table-responsive">
-          <table className="table table-hover align-middle">
-            <thead className="table-light table-themed-head">
+          <table className="table teal-portal-table align-middle">
+            <thead className="table-themed-head">
               <tr>
-                <th scope="col" className="text-uppercase text-muted small">Date</th>
-                <th scope="col" className="text-uppercase text-muted small">Contest Name</th>
-                <th scope="col" className="text-uppercase text-muted small">Top Performer</th>
-                <th scope="col" className="text-uppercase text-muted small">Duration</th>
-                <th scope="col" className="text-uppercase text-muted small">Status</th>
-                <th scope="col" className="text-uppercase text-muted small">Action</th>
+                <th className="small">DATE</th>
+                <th className="small">CONTEST NAME</th>
+                <th className="small">TOP PERFORMER</th>
+                <th className="small">DURATION</th>
+                <th className="small">STATUS</th>
+                <th className="small">ACTION</th>
               </tr>
             </thead>
             <tbody>
               {contests.map((contest) => (
                 <tr key={contest.id} className="table-themed-row">
-                  {/* Strong contrast for date */}
                   <td className="fw-bold theme-text-strong">{contest.date}</td>
-
                   <td>
                     <div className="fw-bold theme-text-primary">{contest.name}</div>
-                    <small className="text-muted theme-text-secondary">
-                      {contest.platform}
-                    </small>
+                    <small className="theme-text-secondary opacity-75">{contest.platform}</small>
                   </td>
-
                   <td>
-                    <span
-                      className="badge bg-warning text-dark px-3 py-2 table-themed-badge"
-                      style={{ borderRadius: '20px' }}
-                    >
+                    <span className="badge bg-teal-soft px-3 py-2">
                       👑 {contest.winner}
                     </span>
                   </td>
-
-                  {/* Strong contrast for duration */}
                   <td className="fw-bold theme-text-strong">{contest.duration}</td>
-
                   <td>
-                    <span style={{ color: '#10b981', fontWeight: 'bold' }}>
-                      • {contest.status}
-                    </span>
+                    <span className="status-indicator-completed">• {contest.status}</span>
                   </td>
                   <td>
-                    <button
-                      className="btn btn-outline-secondary btn-sm table-themed-button"
-                      style={{ borderRadius: '10px' }}
-                    >
-                      View Report
-                    </button>
+                    <button className="btn btn-teal-outline btn-sm">View Report</button>
                   </td>
                 </tr>
               ))}
