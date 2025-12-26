@@ -21,24 +21,26 @@ export default function HeroSection() {
       className="hero-section"
       style={{ paddingTop: '120px', paddingBottom: '80px' }}
     >
-      {/* ================= HERO HEADER ================= */}
       <div style={{ textAlign: 'center', marginBottom: '60px', padding: '0 20px' }}>
         <h1
           className="theme-text-primary"
           style={{
-            fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+            fontSize: 'clamp(2.5rem, 5vw, 4rem)',
             fontWeight: '900',
-            lineHeight: '1.2',
+            lineHeight: '1.1',
           }}
         >
-          Real-time Proctoring
+          <span className="liquid-chrome">Real-time Proctoring</span>
+          
           <span
             className="theme-text-secondary"
             style={{
               display: 'block',
-              fontSize: '0.45em',
-              fontWeight: '500',
-              marginTop: '12px',
+              fontSize: '0.4em',
+              fontWeight: '600',
+              marginTop: '16px',
+              letterSpacing: '2px',
+              textTransform: 'uppercase'
             }}
           >
             Where <span className="highlight">Performance</span> meets{' '}
@@ -48,20 +50,19 @@ export default function HeroSection() {
 
         <div
           style={{
-            width: '110px',
+            width: '120px',
             height: '4px',
-            background: 'linear-gradient(90deg, #0ea5a4, #22d3ee)',
-            margin: '15px auto',
+            background: 'linear-gradient(90deg, transparent, #0ea5a4, transparent)',
+            margin: '20px auto',
             borderRadius: '2px',
           }}
         />
 
-        <p className="theme-text-secondary" style={{ fontSize: '1.1rem' }}>
+        <p className="theme-text-secondary" style={{ fontSize: '1.1rem', opacity: 0.8 }}>
           Ensuring <strong>fair</strong>, <strong>verifiable</strong> contests — in real time.
         </p>
       </div>
 
-      {/* =================(DESCRIPTION & VIDEO) ================= */}
       <div
         style={{
           display: 'flex',
@@ -72,13 +73,13 @@ export default function HeroSection() {
           alignItems: 'center',
         }}
       >
-        {/* TEXT */}
         <div style={{ flex: 1, minWidth: '300px' }}>
           <h3
             style={{
               fontWeight: '700',
               color: 'var(--accent)',
               marginBottom: '15px',
+              letterSpacing: '0.5px'
             }}
           >
             APS — Admin Proctored System
@@ -94,14 +95,13 @@ export default function HeroSection() {
 
           <p
             className="theme-text-secondary"
-            style={{ fontSize: '1rem', lineHeight: '1.6' }}
+            style={{ fontSize: '1rem', lineHeight: '1.6', opacity: 0.9 }}
           >
             Unlike traditional systems that rely on post-exam reviews, APS provides administrators
             with live insights and actionable controls during the examination itself.
           </p>
         </div>
 
-        {/* RIGHT VISUAL */}
         <div style={{ flex: 1, minWidth: '300px', textAlign: 'center' }}>
           <div className="hero-video-card">
             <video
@@ -111,6 +111,7 @@ export default function HeroSection() {
               style={{
                 width: '100%',
                 borderRadius: '18px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
               }}
             >
               <source src="https://www.w3schools.com/html/mov_bbb.mp4" />
@@ -119,7 +120,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* ================= FLOWCHART SECTION ================= */}
       <div style={{ marginTop: '100px', width: '90%', margin: '100px auto 0' }}>
         <h3
           style={{
@@ -127,8 +127,8 @@ export default function HeroSection() {
             fontWeight: '800',
             color: '#0ea5a4',
             textTransform: 'uppercase',
-            letterSpacing: '1px',
-            marginBottom: '50px',
+            letterSpacing: '2px',
+            marginBottom: '60px',
           }}
         >
           How APS Works
@@ -143,7 +143,6 @@ export default function HeroSection() {
             flexWrap: 'wrap',
           }}
         >
-          {/* STEP 1 */}
           <div className="flow-card theme-card">
             <div className="step-badge">1</div>
             <h5 className="flow-title theme-text-primary">Integrity Monitoring</h5>
@@ -167,7 +166,6 @@ export default function HeroSection() {
             <i className="fa-solid fa-angle-right"></i>
           </div>
 
-          {/* STEP 2 */}
           <div className="flow-card theme-card">
             <div className="step-badge">2</div>
             <h5 className="flow-title theme-text-primary">Dual Score Eval</h5>
@@ -212,7 +210,6 @@ export default function HeroSection() {
             <i className="fa-solid fa-angle-right"></i>
           </div>
 
-          {/* STEP 3 */}
           <div className="flow-card theme-card">
             <div className="step-badge">3</div>
             <h5 className="flow-title theme-text-primary">Admin Control</h5>
@@ -255,7 +252,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* ================= CONCLUDING STATEMENT ================= */}
       <div
         style={{
           maxWidth: '800px',
@@ -299,8 +295,32 @@ export default function HeroSection() {
         ></div>
       </div>
 
-      {/*  */}
       <style>{`
+        .liquid-chrome {
+          background: linear-gradient(
+            -45deg, 
+            #ffffff 20%, 
+            #0ea5a4 40%, 
+            #22d3ee 50%, 
+            #0ea5a4 60%, 
+            #ffffff 80%
+          );
+          background-size: 400% 400%;
+          color: #fff;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: fluidGradient 8s ease-in-out infinite;
+          display: inline-block;
+          filter: drop-shadow(0 4px 8px rgba(14, 165, 164, 0.2));
+        }
+
+        @keyframes fluidGradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
         .flow-card {
           flex: 1;
           min-width: 280px;
@@ -316,16 +336,12 @@ export default function HeroSection() {
           transition: all 0.4s ease;
         }
 
-        :root {
-          --card-bg: white;
-        }
-        .dark, .dark-mode {
-          --card-bg: #1e293b;
-        }
+        :root { --card-bg: white; }
+        .dark, .dark-mode { --card-bg: #1e293b; }
 
         .flow-card:hover {
           transform: translateY(-10px);
-          box-shadow: 0 25px 50px rgba(14, 165, 164, 0.15);
+          box-shadow: 0 25px 50px rgba(14, 165, 164, 0.2);
         }
 
         .step-badge {
@@ -342,41 +358,14 @@ export default function HeroSection() {
           align-items: center;
           justify-content: center;
           font-weight: 800;
-          font-size: 1.2rem;
           border: 5px solid var(--card-bg);
           box-shadow: 0 10px 20px rgba(14, 165, 164, 0.3);
-          transition: border-color 0.3s ease;
         }
 
-        .flow-title {
-          font-weight: 800;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          font-size: 1.25rem;
-        }
-
-        .flow-desc {
-          font-size: 0.95rem;
-          line-height: 1.6;
-        }
-
-        .flow-tags span {
-          display: inline-block;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 0.75rem;
-          margin: 4px;
-          font-weight: 700;
-        }
-
-        .flow-arrow {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 2rem;
-          color: #cbd5e1;
-          animation: pulse-arrow 2s infinite ease-in-out;
-        }
+        .flow-title { font-weight: 800; margin-top: 10px; margin-bottom: 10px; font-size: 1.25rem; }
+        .flow-desc { font-size: 0.95rem; line-height: 1.6; }
+        .flow-tags span { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; margin: 4px; font-weight: 700; }
+        .flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #cbd5e1; animation: pulse-arrow 2s infinite ease-in-out; }
 
         @keyframes pulse-arrow {
           0%, 100% { transform: translateX(0); opacity: 0.5; }

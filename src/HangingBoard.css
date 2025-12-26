@@ -1,0 +1,90 @@
+.hanging-container {
+  position: fixed;
+  top: 108px; 
+  right: 40px;
+  z-index: 999; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-200%);
+  transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy entrance */
+}
+
+.hanging-container.show {
+  transform: translateY(0%);
+}
+
+
+.glass-plaque {
+  background: rgba(255, 255, 255, 0.05); /* Very light white */
+  backdrop-filter: blur(12px); /* The "Glass" effect */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 180px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  overflow: hidden;
+  position: relative;
+}
+
+.show .glass-plaque {
+    transform-origin: top center;
+    animation: elegantSwing 3.5s ease-in-out infinite;
+}
+
+
+.shimmer-text {
+  display: block;
+  font-weight: 900;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fff, #0ea5a4, #fff);
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+.subtitle-text {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  margin: 6px 0 14px 0;
+  font-style: italic;
+}
+
+
+.glass-chain {
+  width: 2px;
+  height: 35px;
+  background: linear-gradient(to bottom, #0ea5a4, rgba(255,255,255,0.5));
+  position: absolute;
+  top: -33px;
+}
+.glass-chain.left { left: 30px; }
+.glass-chain.right { right: 30px; }
+
+
+.glass-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 1.4rem;
+  color: #fff;
+  opacity: 0.8;
+}
+
+
+@keyframes elegantSwing {
+  0%, 100% { transform: rotate(1.5deg); }
+  50% { transform: rotate(-1.5deg); }
+}
+
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}

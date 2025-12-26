@@ -17,7 +17,7 @@ import ProtectedRoute from './ProtectedRoute';
 
 import AdminProtectedRoute from './AdminProtectedRoute';
 import LiveMonitorPage from './LiveMonitorPage';
-
+import HangingBoard from './HangingBoard';
 import './index.css';
 
 const ScrollToTop = () => {
@@ -32,6 +32,10 @@ function LandingPage() {
   return (
     <>
       <Navbar />
+      
+      {/* 1. This is where the magic happens! */}
+      <HangingBoard /> 
+      
       <div id="home"><HeroSection /></div>
       <div id="insights"><InsightsSection /></div>
       <Footer />
