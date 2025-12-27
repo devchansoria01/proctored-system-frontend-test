@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 export default function HeroSection() {
   const [text, setText] = useState('');
   const fullText =
-    "APS enables administrators to monitor live contests, detect suspicious behavior, and take immediate action — all from a single dashboard.";
+    "APS operates as a dual-interface ecosystem built on transparency. While administrators orchestrate integrity from a live command center, users utilize a personal hub to navigate their schedules and performance records.";
 
   useEffect(() => {
     let index = 0;
@@ -73,36 +73,47 @@ export default function HeroSection() {
           alignItems: 'center',
         }}
       >
-        <div style={{ flex: 1, minWidth: '300px' }}>
+        <div style={{ flex: 1.2, minWidth: '300px' }}>
           <h3
             style={{
-              fontWeight: '700',
+              fontWeight: '800',
               color: 'var(--accent)',
               marginBottom: '15px',
-              letterSpacing: '0.5px'
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              fontSize: '0.9rem'
             }}
           >
-            APS — Admin Proctored System
+            APS — Dual-End Architecture
           </h3>
 
           <p
             className="theme-text-secondary"
-            style={{ minHeight: '60px', fontSize: '1.1rem', lineHeight: '1.6', margin: '0 0 20px' }}
+            style={{ minHeight: '60px', fontSize: '1.15rem', lineHeight: '1.6', margin: '0 0 20px', fontWeight: '500' }}
           >
             {text}
             <span className="typing-cursor"></span>
           </p>
 
-          <p
-            className="theme-text-secondary"
-            style={{ fontSize: '1rem', lineHeight: '1.6', opacity: 0.9 }}
+          <div 
+            style={{ 
+              fontSize: '1rem', 
+              lineHeight: '1.7', 
+              borderLeft: '3px solid #0ea5a4', 
+              paddingLeft: '20px',
+              color: '#94a3b8' 
+            }}
           >
-            Unlike traditional systems that rely on post-exam reviews, APS provides administrators
-            with live insights and actionable controls during the examination itself.
-          </p>
+            <p style={{ marginBottom: '10px' }}>
+              <strong style={{ color: '#fff' }}>Admin Command:</strong> Surgical precision for live telemetry, instant interventions, and high-fidelity monitoring.
+            </p>
+            <p>
+              <strong style={{ color: '#fff' }}>User Hub:</strong> A dedicated portal to view <strong>Live Schedules</strong> and review <strong>Performance Records</strong>.
+            </p>
+          </div>
         </div>
 
-        <div style={{ flex: 1, minWidth: '300px', textAlign: 'center' }}>
+        <div style={{ flex: 0.8, minWidth: '300px', textAlign: 'center' }}>
           <div className="hero-video-card">
             <video
               muted
