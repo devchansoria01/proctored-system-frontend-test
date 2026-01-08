@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('schedule');
   const [adminName, setAdminName] = useState('Admin'); 
   const [isDarkMode, setIsDarkMode] = useState(document.body.classList.contains('dark-mode'));
-
+  const [ContestUrl, setContestUrl] = useState("")
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       const isAdminLocal = localStorage.getItem('isAdminLoggedIn');
@@ -56,6 +56,17 @@ export default function AdminDashboard() {
       setIsDarkMode(true);
     }
   };
+
+
+  const HandleContestUrlButton = () => {
+    if (!ContestUrl) return;
+    const encodedUrl = encodeURIComponent(ContestUrl);
+    navigate(`/live-monitor/${encodedUrl}`);
+  };
+
+
+
+
 
   return (
     <div className="admin-page-bg" style={{ minHeight: '100vh', paddingBottom: '2rem', position: 'relative' }}>
@@ -390,7 +401,7 @@ export default function AdminDashboard() {
                     background: 'linear-gradient(90deg, #0ea5a4, #22d3ee)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
-                  }}>Create New Contest</h3>
+                  }}>Moniter Contest Live</h3>
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-lg-9 text-start">
@@ -401,6 +412,8 @@ export default function AdminDashboard() {
                                 }}>HackerRank URL</label>
                                 <input 
                                   type="text" 
+                                  value={ContestUrl}
+                                  onChange={(e)=>setContestUrl(e.target.value)}
                                   className="form-control border-0 p-3" 
                                   style={{
                                     background: isDarkMode ? 
@@ -414,7 +427,7 @@ export default function AdminDashboard() {
                                   }}
                                 />
                             </div>
-                            <div className="col-md-6">
+                            {/* <div className="col-md-6">
                                 <label className="small mb-2 fw-bold" style={{ 
                                   color: isDarkMode ? '#94a3b8' : '#64748b'
                                 }}>Contest Password</label>
@@ -432,7 +445,7 @@ export default function AdminDashboard() {
                                       '1px solid rgba(0, 0, 0, 0.05)',
                                   }}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                         <div className="text-center mt-4">
                             <button className="btn px-5 py-3 rounded-pill fw-bold" style={{ 
@@ -441,6 +454,7 @@ export default function AdminDashboard() {
                               border: 'none',
                               transition: 'all 0.3s ease'
                             }}
+                            onClick={HandleContestUrlButton}
                             onMouseEnter={(e) => {
                               e.target.style.transform = 'translateY(-2px)';
                               e.target.style.boxShadow = '0 8px 25px rgba(14, 165, 164, 0.3)';

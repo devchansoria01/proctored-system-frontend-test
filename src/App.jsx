@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-
 import Navbar from './Navbar';
 import HeroSection from './HeroSection';
 import ContributorsSection from './ContributorsSection';
@@ -19,6 +18,7 @@ import AdminProtectedRoute from './AdminProtectedRoute';
 import LiveMonitorPage from './LiveMonitorPage';
 
 import './index.css';
+import DetailedUserMonitering from './DetailedUserMonitering';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -92,10 +92,19 @@ function App() {
 
         {/*  */}
         <Route 
-          path="/live-monitor" 
+          path="/live-monitor/:contestUrl" 
           element={
             <AdminProtectedRoute>
               <LiveMonitorPage />
+            </AdminProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="/live-monitor/:contestUrl/:email" 
+          element={
+            <AdminProtectedRoute>
+              <DetailedUserMonitering/>
             </AdminProtectedRoute>
           } 
         />

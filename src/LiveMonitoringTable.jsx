@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LiveMonitoringTable = () => {
+const LiveMonitoringTable = ({data}) => {
   const liveUsers = [
     { id: 1, name: 'User 1', detected: 'Screen Share (SS)', link: '#', confidence: 45, status: 'High Risk' },
     { id: 2, name: 'User 2', detected: 'Multi-Face',        link: '#', confidence: 88, status: 'Safe' },
